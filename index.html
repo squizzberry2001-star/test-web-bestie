@@ -19,21 +19,16 @@
             <p>Generate Visit Report</p>
         </div>
         
-<div class="page-switcher">
-    <button type="button" class="page-btn active" id="btnReport" onclick="showPage('report')">
-        REPORT
-    </button>
-    <button type="button" class="page-btn" id="btnAnalytics" onclick="showPage('analytics')">
-        REAL ANALYTICS
-    </button>
-</div>
        <div id="reportPage">
     <form id="reportForm" class="form-container">
-        <!-- semua section 1 s/d tombol action tetap di sini -->
-    </form>
-</div>
 
-            <!-- 1. Title Header -->
+
+<div class="page-switcher">
+    <button class="page-btn active">REPORT</button>
+    <button class="page-btn" onclick="goToAnalytics()">REAL ANALYTICS</button>
+</div>
+        
+        <!-- 1. Title Header -->
             <div class="section">
                 <div class="section-header">
                     <div class="icon">1</div>
@@ -372,7 +367,11 @@
 
     <script>
 
+function goToAnalytics(){
+    window.location.href = "analytics.html";
+}
 
+        
 function handleNamaChange() {
     const dropdown = document.getElementById('namaDropdown');
     const manual = document.getElementById('namaManual');
