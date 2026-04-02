@@ -1256,9 +1256,20 @@ doc.text(textLines, px + 2, py + photoH + 5);
             doc.text(`${p}`, PW - M, PH - 8, { align: 'right' });
         }
 
-        const fileName = `Regional_Bestie_Visit_Report_${data.store.replace(/\s+/g,'_')}.pdf`;
-        doc.save(fileName);
-    }
+    const fileName = `Regional_Bestie_Visit_Report_${data.store.replace(/\s+/g,'_')}.pdf`;
+
+// 1. Convert PDF ke base64
+const pdfBase64 = doc.output('datauristring');
+
+// 2. Upload ke Google Script
+await uploadPDF(
+    pdfBase64,
+    data.nama,
+    data.store
+);
+
+// 3. Baru download ke user
+doc.save(fileName);
 
     // Close modal helper (safe no-op when modal tidak dipakai)
     function closePreview() {}
