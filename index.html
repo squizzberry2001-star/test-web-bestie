@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regional Bestie Visit Report System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 Regional Bestie Visit Report</h1>
+            <p>Generate Visit Report</p>
+        </div>
+
+        <form id="reportForm" class="form-container">
+
+            <!-- 1. Title Header -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="icon">1</div>
+                    <h2>Visit Report</h2>
+                </div>
+                <div class="section-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nama *</label>
+                            <input type="text" id="nama" name="nama" placeholder="Enter full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Store *</label>
+                            <input type="text" id="store" name="store" placeholder="Enter store name" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. General Information -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="icon">2</div>
+                    <h2>General Information</h2>
+                </div>
+                <div class="section-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Hari, Tanggal *</label>
+                            <input type="date" id="tanggal" name="tanggal" required>
+                        </div>
+                    </div>
+
+                    <h4 style="margin: 18px 0 12px; color: #1a237e; font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">Crew In Charge</h4>
+
+                    <div class="crew-level-row">
+                        <div class="form-group">
+                            <label>Store Leader</label>
+                            <input type="text" id="storeLeader" name="storeLeader" placeholder="Store leader name">
+                        </div>
+                        <div class="form-group job-level-input">
+                            <label>Job Level</label>
+                            <select id="storeLeaderLevel">
+                                <option value="">Select</option>
+                                <option value="1A">1A</option>
+                                <option value="NS3">NS3</option>
+                                <option value="NS1">NS1</option>
+                                <option value="MG3">MG3</option>
+                                <option value="MG1">MG1</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="crew-level-row">
+                        <div class="form-group">
+                            <label>Shift Leader</label>
+                            <input type="text" id="shiftLeader" name="shiftLeader" placeholder="Shift leader name">
+                        </div>
+                        <div class="form-group job-level-input">
+                            <label>Job Level</label>
+                            <select id="shiftLeaderLevel">
+                                <option value="">Select</option>
+                                 <option value="1A">1A</option>
+                                <option value="NS3">NS3</option>
+                                <option value="NS1">NS1</option>
+                                <option value="MG3">MG3</option>
+                                <option value="MG1">MG1</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 14px;">
+                        <label>Crew Store</label>
+                        <div id="crewList" class="dynamic-list">
+                            <div class="list-header" style="grid-template-columns: 40px 1fr 100px 60px;">      
+                                <span>Crew Store</span>
+                                <span></span>
+                            </div>
+                            <div id="crewItems">
+                                <div class="list-item" style="">
+                                    <span class="row-number">1.</span>
+                                    <input type="text" placeholder="Crew name" class="crew-name">
+                                    <select class="crew-level-select">
+                                        <option value="">Select</option>
+                                         <option value="1A">1A</option>
+                                        <option value="NS3">NS3</option>
+                                        <option value="NS1">NS1</option>
+                                        <option value="MG3">MG3</option>
+                                        <option value="MG1">MG1</option>
+                                    </select>
+                                    <button type="button" class="btn-remove" onclick="removeCrewItem(this)">×</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-add" onclick="addCrewItem()" style="margin-top: 10px;">
+                            + Add Crew Member
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. QSC / FAMITRACK Result -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="icon">3</div>
+                    <h2>QSC / FAMITRACK Result</h2>
+                    <label class="toggle-container">
+                        <input type="checkbox" id="toggleQSCResult" checked onchange="toggleSection('qscResultSection')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="section-content" id="qscResultSection">
+                    <p style="font-size: 12px; color: #7986cb; margin-bottom: 12px;">*Unggah foto form QSC disini. Pastikan foto dapat dibaca dengan jelas</p>
+                    <div class="qsc-photo-table">
+                        <div class="qsc-photo-cell">
+                            <div class="photo-upload-box" onclick="document.getElementById('qscResultPhoto').click()">
+                                <input type="file" id="qscResultPhoto" accept="image/*" style="display:none" onchange="handlePhotoUpload(this, 'qscResultPreview', 'qscResultDesc')">
+                                <div id="qscResultPreview" class="photo-preview">
+                                    <span class="upload-icon">📷</span>
+                                    <span class="upload-text">Klik untuk upload foto QSC</span>
+                                </div>
+                            </div>
+                            <input type="text" id="qscResultDesc" class="photo-description" placeholder="Masukkan deskripsi foto...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. OPI PROJECT OBSERVATION -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="icon">4</div>
+                    <h2>OPI PROJECT OBSERVATION - Findings & Root Cause Analysis</h2>
+                    <label class="toggle-container">
+                        <input type="checkbox" id="toggleOPITable" checked onchange="toggleSection('opiTableSection')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="section-content" id="opiTableSection">
+                    <div class="table-container">
+                        <table class="dynamic-table" id="opiTable">
+                            <thead>
+                                <tr>
+                                    <th style="width:16%">Temuan</th>
+                                    <th style="width:16%">Dampak</th>
+                                    <th style="width:16%">Penyebab</th>
+                                    <th style="width:20%">Tindakan Perbaikan</th>
+                                    <th style="width:14%">Tanggal Perbaikan / Deadline</th>
+                                    <th style="width:12%">Hasil</th>
+                                    <th style="width:6%"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="opiTableBody">
+                                <tr>
+                                    <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter finding..."></textarea></td>
+                                    <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter impact..."></textarea></td>
+                                    <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter cause..."></textarea></td>
+                                    <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter corrective action..."></textarea></td>
+                                    <td><input type="date"></td>
+                                    <td><textarea oninput="handleTextareaInput(this)" placeholder="Result..."></textarea></td>
+                                    <td><button type="button" class="btn-remove" onclick="removeTableRow(this, 'opiTableBody')">×</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="btn btn-add" onclick="addTableRow('opiTableBody')" style="margin-top: 10px;">
+                        + Add Row
+                    </button>
+                    <p style="font-size: 12px; color: #7986cb; margin-top: 10px;">
+                        Isi berdasarkan checklist pada link*
+                        <a href="https://tinyurl.com/opi-report" target="_blank">Klik untuk buka form report OPI</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 5. QSC OBSERVATION -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="icon">5</div>
+                    <h2>QSC OBSERVATION - Findings & Root Cause Analysis</h2>
+                    <label class="toggle-container">
+                        <input type="checkbox" id="toggleQSCTable" checked onchange="toggleSection('qscTableSection')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="section-content" id="qscTableSection">
+                    <div class="table-container">
+                        <table class="dynamic-table" id="qscTable">
+                            <thead>
+                                <tr>
+                                    <th style="width:16%">Temuan</th>
+                                    <th style="width:16%">Dampak</th>
+                                    <th style="width:16%">Penyebab</th>
+                                    <th style="width:20%">Tindakan Perbaikan</th>
+                                    <th style="width:14%">Tanggal Perbaikan / Deadline</th>
+                                    <th style="width:12%">Hasil</th>
+                                    <th style="width:6%"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="qscTableBody">
+                                <tr>
+                                    <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter finding..."></textarea></td>
+                                    <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter impact..."></textarea></td>
+                                    <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter cause..."></textarea></td>
+                                    <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter corrective action..."></textarea></td>
+                                    <td><input type="date"></td>
+                                    <td><textarea oninput="handleTextareaInput(this)" placeholder="Result..."></textarea></td>
+                                    <td><button type="button" class="btn-remove" onclick="removeTableRow(this, 'qscTableBody')">×</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="btn btn-add" onclick="addTableRow('qscTableBody')" style="margin-top: 10px;">
+                        + Add Row
+                    </button>
+                </div>
+            </div>
+
+            <!-- 6. FINDING EVIDENCE -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="icon">6</div>
+                    <h2>FINDING EVIDENCE of OPI & QSC Observation</h2>
+                    <label class="toggle-container">
+                        <input type="checkbox" id="toggleFindingEvidence" checked onchange="toggleSection('findingEvidenceSection')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="section-content" id="findingEvidenceSection">
+                    <div id="findingEvidenceGrid" class="photo-grid"></div>
+                    <button type="button" class="btn btn-add" onclick="addPhotoGridRow('findingEvidenceGrid')" style="margin-top: 10px;">
+                        + Add Photo Row
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7. Corrective Action Evidence -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="icon">7</div>
+                    <h2>Corrective Action Evidence & Result by Regional Bestie</h2>
+                    <label class="toggle-container">
+                        <input type="checkbox" id="toggleCorrectiveAction" checked onchange="toggleSection('correctiveActionSection')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="section-content" id="correctiveActionSection">
+                    <div id="correctiveActionGrid" class="photo-grid"></div>
+                    <button type="button" class="btn btn-add" onclick="addPhotoGridRow('correctiveActionGrid')" style="margin-top: 10px;">
+                        + Add Photo Row
+                    </button>
+                </div>
+            </div>
+
+            <!-- 8. Store Assignment -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="icon">8</div>
+                    <h2>Store Assignment - Corrective Action Purpose</h2>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Assignment Link</label>
+                        <input type="url" id="storeAssignmentLink" name="storeAssignmentLink" placeholder="https://example.com/assignment" value="https://tinyurl.com/store-caassignment">
+                    </div>
+                    <div class="info-box">
+                        <h4>Mekanisme Pelaporan:</h4>
+                        <ol>
+                            <li>Unduh file pada link di atas</li>
+                            <li>Tim store mengisi form tersebut berdasarkan temuan yang telah ditunjukkan pada file laporan ini</li>
+                            <li>Tindakan perbaikan <strong>WAJIB</strong> dilakukan sebelum deadline yang diberikan oleh Regional Bestie</li>
+                            <li>Form tindakan perbaikan yang telah dibuat <strong>WAJIB</strong> dikirimkan kembali via email dengan terusan sebagai berikut:
+                                <ul style="list-style-type: lower-alpha;">
+                                    <li>Regional Manager</li>
+                                    <li>Area Manager</li>
+                                    <li>Regional Bestie</li>
+                                    <li>FMCU (Bu Sari, Pak Ami, Pak Aufar)</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="downloadPDF()">
+                    <span>⬇️</span> Download PDF
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="goToTutorial()">
+                    Convert PDF to PPT
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="confirmClearData()">
+                    Clear Data
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+
+
+        function goToTutorial() {
+    window.location.href = "tutorial.html";
+}
+    // ─────────────────────────────────────────────────────────────
+    //  INIT
+    // ─────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function() {
+        for (let i = 0; i < 2; i++) {
+            addPhotoGridRow('findingEvidenceGrid', false);
+            addPhotoGridRow('correctiveActionGrid', false);
+        }
+        updateCrewNumbers();
+    });
+
+    function toggleSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        section.style.display = section.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    //  CREW
+    // ─────────────────────────────────────────────────────────────
+    function addCrewItem() {
+        const crewItems = document.getElementById('crewItems');
+        const currentCount = crewItems.querySelectorAll('.list-item').length;
+        if (currentCount >= 10) { alert('Maximum 10 crew members allowed'); return; }
+        const newItem = document.createElement('div');
+        newItem.className = 'list-item';
+        newItem.style.gridTemplateColumns = '40px 1fr 100px 60px';
+        newItem.innerHTML = `
+            <span class="row-number">${currentCount + 1}.</span>
+            <input type="text" placeholder="Crew name" class="crew-name">
+            <select class="crew-level-select">
+                <option value="">Select</option>
+                 <option value="1A">1A</option>
+                                <option value="NS3">NS3</option>
+                                <option value="NS1">NS1</option>
+                                <option value="MG3">MG3</option>
+                                <option value="MG1">MG1</option>
+            </select>
+            <button type="button" class="btn-remove" onclick="removeCrewItem(this)">×</button>
+        `;
+        crewItems.appendChild(newItem);
+    }
+
+    function removeCrewItem(btn) {
+        const items = document.querySelectorAll('#crewItems .list-item');
+        if (items.length > 1) { btn.parentElement.remove(); updateCrewNumbers(); }
+    }
+
+    function updateCrewNumbers() {
+        document.querySelectorAll('#crewItems .list-item').forEach((item, i) => {
+            item.querySelector('.row-number').textContent = `${i + 1}.`;
+        });
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    //  TABLE ROWS
+    // ─────────────────────────────────────────────────────────────
+    function addTableRow(tableBodyId) {
+    const tbody = document.getElementById(tableBodyId);
+
+    const rowCount = tbody.querySelectorAll('tr').length;
+    if (rowCount >= 50) {
+        alert('Maksimal 50 row');
+        return;
+    }
+    const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter finding..."></textarea></td>
+            <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter impact..."></textarea></td>
+            <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter cause..."></textarea></td>
+            <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter corrective action..."></textarea></td>
+            <td><input type="date"></td>
+            <td><textarea oninput="handleTextareaInput(this)"  placeholder="Result..."></textarea></td>
+            <td><button type="button" class="btn-remove" onclick="removeTableRow(this, '${tableBodyId}')">×</button></td>
+        `;
+        tbody.appendChild(newRow);
+    }
+
+    function removeTableRow(btn, tableBodyId) {
+        const rows = document.querySelectorAll(`#${tableBodyId} tr`);
+        if (rows.length > 1) { btn.parentElement.parentElement.remove(); }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    //  PHOTOS
+    // ─────────────────────────────────────────────────────────────
+    function compressImageFile(file, maxDimension = 1280, quality = 0.78) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    let { width, height } = img;
+                    const scale = Math.min(1, maxDimension / Math.max(width, height));
+                    width = Math.round(width * scale);
+                    height = Math.round(height * scale);
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    try {
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    } catch (err) {
+                        resolve(e.target.result);
+                    }
+                };
+                img.onerror = () => resolve(e.target.result);
+                img.src = e.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function handlePhotoUpload(input, previewId, descId) {
+        const file = input.files[0];
+        if (file) {
+            const preview = document.getElementById(previewId);
+            const dataUrl = await compressImageFile(file);
+            preview.innerHTML = `<img src="${dataUrl}" alt="Uploaded photo">`;
+            preview.classList.add('has-image');
+        }
+    }
+
+        function autoResizeTextarea(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+}
+
+function handleTextareaInput(el) {
+    // Auto resize (AMAN)
+    autoResizeTextarea(el);
+
+    // Replace ; jadi newline (TIDAK merusak PDF)
+    if (el.value.includes(';')) {
+        el.value = el.value.replace(/;/g, '\n');
+    }
+}
+
+    function createPhotoCell(index, sectionName) {
+        const uniqueId = Date.now() + index + Math.random().toString(36).substr(2,5);
+        return `
+            <div class="photo-cell">
+                <div class="photo-upload-box" onclick="document.getElementById('photo${uniqueId}').click()">
+                    <input type="file" id="photo${uniqueId}" accept="image/*" style="display:none"
+                        onchange="handlePhotoCellUpload(this, 'preview${uniqueId}')">
+                    <div id="preview${uniqueId}" class="photo-preview">
+                        <span class="upload-icon">📷</span>
+                        <span class="upload-text">Klik untuk upload foto</span>
+                    </div>
+                </div>
+                <input type="text" id="desc${uniqueId}" class="photo-description" placeholder="Deskripsi foto...">
+            </div>
+        `;
+    }
+
+    async function handlePhotoCellUpload(input, previewId) {
+        const file = input.files[0];
+        if (file) {
+            const preview = document.getElementById(previewId);
+            const dataUrl = await compressImageFile(file);
+            preview.innerHTML = `<img src="${dataUrl}" alt="photo">`;
+            preview.classList.add('has-image');
+        }
+    }
+
+    function addPhotoGridRow(gridId, animate = true) {
+        const grid = document.getElementById(gridId);
+        const currentRows = grid.querySelectorAll('.photo-row').length;
+        if (currentRows >= 50) { alert('Maksimal 50 baris foto'); return; }
+        const row = document.createElement('div');
+        row.className = 'photo-row';
+        let cells = '';
+        for (let i = 0; i < 4; i++) {
+            cells += createPhotoCell(i + currentRows * 4, gridId);
+        }
+        row.innerHTML = cells;
+        grid.appendChild(row);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    //  UTILITIES
+    // ─────────────────────────────────────────────────────────────
+    function formatDate(dateStr) {
+        if (!dateStr || dateStr === '-') return '-';
+        const date = new Date(dateStr);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear()).slice(-2);
+        return `${day}/${month}/${year}`;
+    }
+
+    function formatDateLong(dateStr) {
+        if (!dateStr || dateStr === '-') return '-';
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const date = new Date(dateStr);
+        return `${String(date.getDate()).padStart(2,'0')} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    //  FORM DATA
+    // ─────────────────────────────────────────────────────────────
+    function getFormData() {
+        const crewItems = document.querySelectorAll('#crewItems .list-item');
+        const crewList = [];
+        crewItems.forEach(item => {
+            const name = item.querySelector('.crew-name').value.trim();
+            const level = item.querySelector('.crew-level-select').value;
+            if (name || level) crewList.push({ name: name || '-', level: level || '-' });
+        });
+
+        const opiRows = document.querySelectorAll('#opiTableBody tr');
+        const opiData = [];
+        opiRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const d = {
+                temuan:  cells[0].querySelector('textarea').value.trim() || '-',
+                dampak:  cells[1].querySelector('textarea').value.trim() || '-',
+                penyebab:cells[2].querySelector('textarea').value.trim() || '-',
+                tindakan:cells[3].querySelector('textarea').value.trim() || '-',
+                deadline:cells[4].querySelector('input').value || '-',
+                hasil:   cells[5].querySelector('textarea').value.trim() || '-'
+            };
+            if (d.temuan !== '-' || d.dampak !== '-' || d.penyebab !== '-') opiData.push(d);
+        });
+
+        const qscRows = document.querySelectorAll('#qscTableBody tr');
+        const qscData = [];
+        qscRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const d = {
+                temuan:  cells[0].querySelector('textarea').value.trim() || '-',
+                dampak:  cells[1].querySelector('textarea').value.trim() || '-',
+                penyebab:cells[2].querySelector('textarea').value.trim() || '-',
+                tindakan:cells[3].querySelector('textarea').value.trim() || '-',
+                deadline:cells[4].querySelector('input').value || '-',
+                hasil:   cells[5].querySelector('textarea').value.trim() || '-'
+            };
+            if (d.temuan !== '-' || d.dampak !== '-' || d.penyebab !== '-') qscData.push(d);
+        });
+
+        const findingEvidencePhotos = getPhotoGridData('findingEvidenceGrid');
+        const correctiveActionPhotos = getPhotoGridData('correctiveActionGrid');
+        const qscResultPhoto = {
+            image: document.querySelector('#qscResultPreview img')?.src || null,
+            description: document.getElementById('qscResultDesc').value.trim() || '-'
+        };
+
+        return {
+            nama: document.getElementById('nama').value.trim() || '-',
+            store: document.getElementById('store').value.trim() || '-',
+            tanggal: document.getElementById('tanggal').value.trim() || '-',
+            storeLeader: document.getElementById('storeLeader').value.trim() || '-',
+            storeLeaderLevel: document.getElementById('storeLeaderLevel').value || '-',
+            shiftLeader: document.getElementById('shiftLeader').value.trim() || '-',
+            shiftLeaderLevel: document.getElementById('shiftLeaderLevel').value || '-',
+            crewList,
+            qscResultPhoto,
+            opiData,
+            qscData,
+            findingEvidencePhotos,
+            correctiveActionPhotos,
+            storeAssignmentLink: document.getElementById('storeAssignmentLink').value.trim() || '-',
+            showQSCResult: document.getElementById('toggleQSCResult').checked,
+            showOPITable:  document.getElementById('toggleOPITable').checked,
+            showQSCTable:  document.getElementById('toggleQSCTable').checked,
+            showFindingEvidence:   document.getElementById('toggleFindingEvidence').checked,
+            showCorrectiveAction:  document.getElementById('toggleCorrectiveAction').checked
+        };
+    }
+
+    function getPhotoGridData(gridId) {
+        const grid = document.getElementById(gridId);
+        const photos = [];
+        grid.querySelectorAll('.photo-cell').forEach(cell => {
+            const img  = cell.querySelector('img');
+            const desc = cell.querySelector('.photo-description').value.trim();
+            photos.push({ image: img ? img.src : null, description: desc || '-' });
+        });
+        return photos;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    //  PDF DOWNLOAD — LANDSCAPE A4
+    // ─────────────────────────────────────────────────────────────
+    async function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const data = getFormData();
+
+     const doc = new jsPDF({
+    orientation: 'landscape',
+    unit: 'mm',
+    format: [320, 180] // 16:9 ratio
+    });
+
+        const PW = doc.internal.pageSize.getWidth();   // 297
+        const PH = doc.internal.pageSize.getHeight();  // 210
+        const M  = 12; // margin
+        const CW = PW - M * 2; // content width
+        let y    = M;
+
+        // ─── Color palette ───
+        const C = {
+            teal:    [27, 143, 150],      // #1B8F96 - main teal color from PDF
+            tealDark:[0, 105, 92],
+            navy:    [26, 35, 126],
+            blue:    [57, 73, 171],
+            grey:    [240, 242, 255],
+            lgrey:   [248, 249, 255],
+            white:   [255, 255, 255],
+            black:   [0, 0, 0],
+            red:     [198, 40, 40],
+            green:   [46, 125, 50],
+            orange:  [230, 81, 0],
+        };
+
+        // ─── Helper: draw slide header ───
+        function drawSlideHeader(title, color) {
+    // FULL WIDTH HEADER
+    doc.setFillColor(...color);
+    doc.rect(0, 0, PW, 20, 'F');
+
+    // TITLE
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...C.white);
+    doc.text(title, 12, 13);
+
+    // LINE BAWAH (optional biar clean)
+    doc.setDrawColor(200);
+    doc.line(0, 20, PW, 20);
+
+    // RESET TEXT
+    doc.setTextColor(...C.black);
+
+    // START CONTENT DI BAWAH HEADER
+    y = 30;
+}
+
+        // ─── Helper: page break ───
+        function checkPage(needed) {
+            if (y + needed > PH - M) {
+                doc.addPage();
+                y = M;
+            }
+        }
+
+        // ─── Helper: image base64 ───
+        async function imgB64(url) {
+            return new Promise(resolve => {
+                if (!url) return resolve(null);
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = function() {
+                    const c = document.createElement('canvas');
+                    c.width = img.width; c.height = img.height;
+                    c.getContext('2d').drawImage(img, 0, 0);
+                    resolve(c.toDataURL('image/jpeg', 0.82));
+                };
+                img.onerror = () => resolve(null);
+                img.src = url;
+            });
+        }
+
+        // ─── Helper: add image in box ───
+        async function addImgInBox(imgSrc, bx, by, bw, bh) {
+            if (!imgSrc) return;
+            try {
+                const b64 = await imgB64(imgSrc);
+                if (!b64) return;
+                const tmpImg = new Image();
+                tmpImg.src = imgSrc;
+                await new Promise(r => { tmpImg.onload = r; tmpImg.onerror = r; });
+                const ar = tmpImg.width / tmpImg.height;
+                const pad = 3;
+                let iw = bw - pad*2, ih = bh - pad*2;
+                if (ar > iw/ih) { ih = iw / ar; } else { iw = ih * ar; }
+                const ix = bx + (bw - iw) / 2;
+                const iy = by + (bh - ih) / 2;
+                doc.addImage(b64, 'JPEG', ix, iy, iw, ih);
+            } catch(e) {}
+        }
+
+  // ╔═══════════════════════════════════════════════════════════╗
+ // ║  SLIDE 1 — COVER                                         ║
+ // ╚═══════════════════════════════════════════════════════════╝
+
+// background putih
+doc.setFillColor(...C.white);
+doc.rect(0, 0, PW, PH, 'F');
+
+// gambar store (header image)
+const storeImg = await imgB64('storefoto2.png'); // ganti dengan path gambar store Anda
+if (storeImg) {
+    doc.addImage(storeImg, 'png', 0, 0, PW, 80);
+}
+
+// background area bawah
+doc.setFillColor(245,245,245);
+doc.rect(0, 80, PW, PH-80, 'F');
+
+// Title
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(28);
+doc.setTextColor(...C.teal);
+doc.text('Regional Bestie Visit Report', M, 110);
+
+// Nama & Store
+doc.setFontSize(14);
+doc.setFont('helvetica','normal');
+doc.setTextColor(...C.black);
+
+doc.text('Nama :', M, 135);
+doc.text(data.nama || '-', M+35, 135);
+
+doc.text('Store :', M, 150);
+doc.text(data.store || '-', M+35, 150);
+
+        // ╔═══════════════════════════════════════════════════════════╗
+        // ║  SLIDE 2 — GENERAL INFORMATION                           ║
+        // ╚═══════════════════════════════════════════════════════════╝
+      doc.addPage();
+
+// ================= HEADER =================
+doc.setFillColor(23, 120, 130);
+doc.rect(0, 0, PW, 20, 'F');
+
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(16);
+doc.setTextColor(255,255,255);
+doc.text('GENERAL INFORMATION', 12, 13);
+
+// ================= TANGGAL (DIPISAH) =================
+doc.setFont('helvetica', 'normal');
+doc.setFontSize(11);
+doc.setTextColor(50,50,50);
+
+doc.text(`Hari, Tanggal : ${formatDate(data.tanggal)}`, 12, 30);
+
+// ================= TABLE DATA =================
+const tableData = [
+    ['Store Leader', data.storeLeader || '-', data.storeLeaderLevel || '-'],
+    ['Shift Leader', data.shiftLeader || '-', data.shiftLeaderLevel || '-'],
+];
+
+// Crew dinamis
+(data.crewList || []).forEach((crew, i) => {
+    tableData.push([
+        `Crew ${i + 1}`,
+        crew.name || '-',
+        crew.level || '-'
+    ]);
+});
+
+// ================= TABLE =================
+doc.autoTable({
+    startY: 40,
+    head: [['Role', 'Name', 'Job Level']],
+    body: tableData,
+
+    theme: 'grid',
+
+    styles: {
+        fontSize: 11,
+        cellPadding: 5
+    },
+
+    headStyles: {
+        fillColor: [23, 120, 130],
+        textColor: [255,255,255],
+        fontStyle: 'bold'
+    },
+
+    alternateRowStyles: {
+        fillColor: [245,247,250]
+    },
+
+    tableWidth: 'auto',
+    margin: { left: 12, right: 12 }
+});
+
+        // ╔═══════════════════════════════════════════════════════════╗
+        // ║  SLIDE 3 — QSC/FAMITRACK RESULT                          ║
+        // ╚═══════════════════════════════════════════════════════════╝
+        if (data.showQSCResult) {
+            doc.addPage();
+            y = M;
+            drawSlideHeader('QSC/ Famitrack Result', C.teal);
+            
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'italic');
+            doc.setTextColor(100, 100, 150);
+            y += 10;
+            
+            // Photo box
+            const photoH = PH - y - M - 20;
+            doc.setFillColor(...C.lgrey);
+            doc.setDrawColor(...C.teal);
+            doc.setLineWidth(1);
+            doc.rect(M, y, CW, photoH, 'FD');
+            
+            if (data.qscResultPhoto.image) {
+                await addImgInBox(data.qscResultPhoto.image, M + 5, y + 5, CW - 10, photoH - 10);
+            } else {
+                doc.setFontSize(36);
+                doc.setTextColor(180, 180, 220);
+                doc.text('📷', PW / 2, y + photoH / 2, { align: 'center' });
+            }
+        }
+
+        // ╔═══════════════════════════════════════════════════════════╗
+        // ║  SLIDE 4 — OPI PROJECT OBSERVATION (Title)                ║
+        // ╚═══════════════════════════════════════════════════════════╝
+        if (data.showOPITable) {
+            doc.addPage();
+            // Title slide
+            doc.setFillColor(...C.white);
+            doc.rect(0, 0, PW, PH, 'F');
+            
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(30);
+            doc.setTextColor(...C.teal);
+            doc.text('OPI PROJECT OBSERVATION', M, PH / 2 - 15);
+            
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(100, 100, 100);
+            doc.text('Findings & Root Cause Analysis', M, PH / 2 + 5);
+
+            // ═══ OPI TABLE SLIDES ═══
+            if (data.opiData.length > 0) {
+                const ROWS_PER_PAGE = 3;
+                const chunks = [];
+                for (let i = 0; i < data.opiData.length; i += ROWS_PER_PAGE)
+                    chunks.push(data.opiData.slice(i, i + ROWS_PER_PAGE));
+
+                const headerCols = ['Temuan', 'Dampak', 'Penyebab', 'Tindakan Perbaikan', 'Tanggal Perbaikan/Deadline', 'Hasil'];
+
+                chunks.forEach((chunk, idx) => {
+                    doc.addPage();
+                    y = M;
+                    drawSlideHeader('OBSERVATION - Findings & Root Cause Analysis', C.teal);
+
+                    const tableData = chunk.map(r => [
+                        r.temuan, r.dampak, r.penyebab, r.tindakan,
+                        r.deadline !== '-' ? formatDate(r.deadline) : '-',
+                        r.hasil
+                    ]);
+
+                    doc.autoTable({
+                        startY: y,
+                        head: [headerCols],
+                        body: tableData,
+                        theme: 'grid',
+                        styles: {
+        overflow: 'linebreak',
+        cellWidth: 'wrap',
+        fontSize: 8
+    },
+                        headStyles: {
+                            fillColor: C.teal, textColor: C.white,
+                            fontStyle: 'bold', fontSize: 9,
+                            cellPadding: { top: 4, bottom: 4, left: 4, right: 4 },
+                            lineColor: C.teal, lineWidth: 0.5
+                        },
+                        bodyStyles: {
+                            fontSize: 8, cellPadding: { top: 3, bottom: 3, left: 4, right: 4 },
+                            textColor: C.black, lineColor: [200, 200, 200], lineWidth: 0.3,
+                            minCellHeight: 12
+                        },
+                        alternateRowStyles: { fillColor: C.grey },
+    columnStyles: {
+    0: { cellWidth: CW * 0.16 },
+    1: { cellWidth: CW * 0.16 },
+    2: { cellWidth: CW * 0.16 },
+    3: { cellWidth: CW * 0.22 },
+    4: { cellWidth: CW * 0.14, halign: 'center' },
+    5: { cellWidth: CW * 0.16 }
+},
+tableWidth: CW,
+                        margin: { left: M, right: M },
+                        tableLineColor: C.teal, tableLineWidth: 0.5
+                    });
+                    
+                    y = doc.lastAutoTable.finalY + 8;
+                    if (idx === 0) {
+                        doc.setFontSize(8);
+                        doc.setFont('helvetica', 'italic');
+                        doc.setTextColor(100, 100, 150);
+                    }
+                });
+            }
+        }
+
+        // ╔═══════════════════════════════════════════════════════════╗
+        // ║  SLIDE 5 — QSC OBSERVATION (Title + Table)               ║
+        // ╚═══════════════════════════════════════════════════════════╝
+        if (data.showQSCTable) {
+            doc.addPage();
+            // Title slide
+            doc.setFillColor(...C.white);
+            doc.rect(0, 0, PW, PH, 'F');
+           
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(30);
+            doc.setTextColor(...C.teal);
+            doc.text('QSC OBSERVATION', M, PH / 2 - 15);
+            
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(100, 100, 100);
+            doc.text('Findings & Root Cause Analysis', M, PH / 2 + 5);
+
+            // ═══ QSC TABLE SLIDES ═══
+            if (data.qscData.length > 0) {
+                const ROWS_PER_PAGE = 3;
+                const chunks = [];
+                for (let i = 0; i < data.qscData.length; i += ROWS_PER_PAGE)
+                    chunks.push(data.qscData.slice(i, i + ROWS_PER_PAGE));
+
+                const headerCols = ['Temuan', 'Dampak', 'Penyebab', 'Tindakan Perbaikan', 'Tanggal Perbaikan/Deadline', 'Hasil'];
+
+                chunks.forEach((chunk) => {
+                    doc.addPage();
+                    y = M;
+                    drawSlideHeader('OBSERVATION - Findings & Root Cause Analysis', C.teal);
+
+                    const tableData = chunk.map(r => [
+                        r.temuan, r.dampak, r.penyebab, r.tindakan,
+                        r.deadline !== '-' ? formatDate(r.deadline) : '-',
+                        r.hasil
+                    ]);
+
+                    doc.autoTable({
+                        startY: y,
+                        head: [headerCols],
+                        body: tableData,
+                        theme: 'grid',
+                        styles: {
+        overflow: 'linebreak',
+        cellWidth: 'wrap',
+        fontSize: 8
+    },
+                        headStyles: {
+                            fillColor: C.teal, textColor: C.white,
+                            fontStyle: 'bold', fontSize: 9,
+                            cellPadding: { top: 4, bottom: 4, left: 4, right: 4 },
+                            lineColor: C.teal, lineWidth: 0.5
+                        },
+                        bodyStyles: {
+                            fontSize: 8, cellPadding: { top: 3, bottom: 3, left: 4, right: 4 },
+                            textColor: C.black, lineColor: [200, 200, 200], lineWidth: 0.3,
+                            minCellHeight: 12
+                        },
+                        alternateRowStyles: { fillColor: C.grey },
+   columnStyles: {
+    0: { cellWidth: CW * 0.16 },
+    1: { cellWidth: CW * 0.16 },
+    2: { cellWidth: CW * 0.16 },
+    3: { cellWidth: CW * 0.22 },
+    4: { cellWidth: CW * 0.14, halign: 'center' },
+    5: { cellWidth: CW * 0.16 }
+},
+tableWidth: CW,
+                        margin: { left: M, right: M },
+                        tableLineColor: C.teal, tableLineWidth: 0.5
+                    });
+                });
+            }
+        }
+
+                // ╔═══════════════════════════════════════════════════════════╗
+        // ║  SLIDE 6 — FINDING EVIDENCE (Title + Photos)             ║
+        // ╚═══════════════════════════════════════════════════════════╝
+        if (data.showFindingEvidence) {
+            doc.addPage();
+            // Title slide
+            doc.setFillColor(...C.white);
+            doc.rect(0, 0, PW, PH, 'F');
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(30);
+            doc.setTextColor(...C.teal);
+            doc.text('FINDING EVIDENCE', M, PH / 2 - 15);
+            
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(100, 100, 100);
+            doc.text('of OPI & QSC Observation', M, PH / 2 + 5);
+
+            // Photo slides - 5 columns × 2 rows = 10 photos
+            const PHOTOS_PP = 10;
+            const photos = data.findingEvidencePhotos;
+            const chunks = [];
+            for (let i = 0; i < photos.length; i += PHOTOS_PP) chunks.push(photos.slice(i, i + PHOTOS_PP));
+            if (!chunks.length) chunks.push([]);
+
+            for (let ci = 0; ci < chunks.length; ci++) {
+                const chunk = chunks[ci];
+                doc.addPage();
+                y = M;
+
+                const cellW = CW / 5;
+                const photoH = (PH - M * 2) / 2 - 15;
+                const descH = 12;
+                const cellH = photoH + descH;
+
+                for (let row = 0; row < 2; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        const idx = row * 5 + col;
+                        const px = M + col * cellW;
+                        const py = y + row * cellH;
+                        
+                        // Cell border
+                        doc.setFillColor(...C.lgrey);
+                        doc.setDrawColor(...C.black);
+                        doc.setLineWidth(0.3);
+                        doc.rect(px, py, cellW, cellH, 'FD');
+                        
+                        // Photo area
+                        if (chunk[idx] && chunk[idx].image) {
+                            await addImgInBox(chunk[idx].image, px + 2, py + 2, cellW - 4, photoH - 4);
+                        } else {
+                            doc.setFontSize(14);
+                            doc.setTextColor(180, 180, 200);
+                            doc.text('📷', px + cellW / 2, py + photoH / 2, { align: 'center' });
+                        }
+                        
+                        // Description
+                        doc.setFillColor(...C.grey);
+                        doc.rect(px, py + photoH, cellW, descH, 'F');
+                        doc.setFontSize(7);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(...C.black);
+                        const desc = chunk[idx] ? chunk[idx].description : '-';
+
+// wrap text sesuai lebar box
+const textLines = doc.splitTextToSize(desc, cellW - 4);
+
+// render multi-line
+doc.text(textLines, px + 2, py + photoH + 5);
+                    }
+                }
+            }
+        }
+
+        // ╔═══════════════════════════════════════════════════════════╗
+        // ║  SLIDE 7 — CORRECTIVE ACTION (Title + Photos)            ║
+        // ╚═══════════════════════════════════════════════════════════╝
+        if (data.showCorrectiveAction) {
+            doc.addPage();
+            // Title slide
+            doc.setFillColor(...C.white);
+            doc.rect(0, 0, PW, PH, 'F');
+            
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(30);
+            doc.setTextColor(...C.teal);
+            doc.text('Corrective Action', M, PH / 2 - 20);
+            
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(100, 100, 100);
+            doc.text('Evidence & Result by Regional Bestie', M, PH / 2);
+
+            // Photo slides - 5 columns × 2 rows = 10 photos
+            const PHOTOS_PP = 10;
+            const photos = data.correctiveActionPhotos;
+            const chunks = [];
+            for (let i = 0; i < photos.length; i += PHOTOS_PP) chunks.push(photos.slice(i, i + PHOTOS_PP));
+            if (!chunks.length) chunks.push([]);
+
+            for (let ci = 0; ci < chunks.length; ci++) {
+                const chunk = chunks[ci];
+                doc.addPage();
+                y = M;
+
+                const cellW = CW / 5;
+                const photoH = (PH - M * 2) / 2 - 15;
+                const descH = 12;
+                const cellH = photoH + descH;
+
+                for (let row = 0; row < 2; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        const idx = row * 5 + col;
+                        const px = M + col * cellW;
+                        const py = y + row * cellH;
+                        
+                        doc.setFillColor(...C.lgrey);
+                        doc.setDrawColor(...C.black);
+                        doc.setLineWidth(0.3);
+                        doc.rect(px, py, cellW, cellH, 'FD');
+                        
+                        if (chunk[idx] && chunk[idx].image) {
+                            await addImgInBox(chunk[idx].image, px + 2, py + 2, cellW - 4, photoH - 4);
+                        } else {
+                            doc.setFontSize(14);
+                            doc.setTextColor(180, 180, 200);
+                            doc.text('📷', px + cellW / 2, py + photoH / 2, { align: 'center' });
+                        }
+                        
+                        doc.setFillColor(...C.grey);
+                        doc.rect(px, py + photoH, cellW, descH, 'F');
+                        doc.setFontSize(7);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(...C.black);
+                        const desc = chunk[idx] ? chunk[idx].description : '-';
+
+// wrap text sesuai lebar box
+const textLines = doc.splitTextToSize(desc, cellW - 4);
+
+// render multi-line
+doc.text(textLines, px + 2, py + photoH + 5);
+                    }
+                }
+            }
+        }
+
+        // ╔═══════════════════════════════════════════════════════════╗
+        // ║  SLIDE 8 — STORE ASSIGNMENT (Title)                       ║
+        // ╚═══════════════════════════════════════════════════════════╝
+        doc.addPage();
+        doc.setFillColor(...C.white);
+        doc.rect(0, 0, PW, PH, 'F');
+        
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(30);
+        doc.setTextColor(...C.teal);
+        doc.text('Store Assignment', M, PH / 2 - 15);
+        
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(100, 100, 100);
+        doc.text('Corrective Action Purpose', M, PH / 2 + 5);
+
+        // ═══ FINAL SLIDE — MEKANISME PELAPORAN ═══
+        doc.addPage();
+        y = M;
+        
+        // Link header
+        doc.setFillColor(...C.teal);
+        doc.rect(M, y, CW, 10, 'F');
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...C.white);
+        doc.text(data.storeAssignmentLink,
+        M + CW / 2,   // tengah horizontal
+        y + 7,
+        { align: 'center' }
+        );
+        y += 16;
+        
+        // Mekanisme title
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.setTextColor(...C.black);
+        doc.text('Mekanisme pelaporan', M, y);
+        y += 8;
+        
+        // List
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        const mekText = [
+            '1. Unduh file pada link di atas',
+            '2. Tim store mengisi form tersebut berdasarkan temuan yang telah ditunjukkan pada file laporan ini',
+            '3. Tindakan perbaikan WAJIB dilakukan sebelum deadline yang diberikan oleh Regional Bestie',
+            '4. Form tindakan perbaikan yang telah dibuat WAJIB dikirimkan kembali via email dengan terusan sebagai berikut:'
+        ];
+        mekText.forEach((line, i) => {
+            const wrapped = doc.splitTextToSize(line, CW - 10);
+            wrapped.forEach((wl, wi) => {
+                doc.text(wl, M + 5, y);
+                y += 6;
+            });
+        });
+        
+        // Sub-list
+        const subList = ['a. Regional Manager', 'b. Area Manager', 'c. Regional Bestie', 'd. FMCU (Bu Sari, Pak Ami, Pak Aufar)'];
+        subList.forEach(item => {
+            doc.text(item, M + 15, y);
+            y += 6;
+        });
+
+        // Page numbers
+        const totalPages = doc.internal.getNumberOfPages();
+        for (let p = 1; p <= totalPages; p++) {
+            doc.setPage(p);
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(150, 150, 150);
+            doc.text(`${p}`, PW - M, PH - 8, { align: 'right' });
+        }
+
+        const fileName = `Regional_Bestie_Visit_Report_${data.store.replace(/\s+/g,'_')}.pdf`;
+        doc.save(fileName);
+    }
+
+    // Close modal helper (safe no-op when modal tidak dipakai)
+    function closePreview() {}
+    const previewModal = document.getElementById('previewModal');
+    if (previewModal) {
+        previewModal.addEventListener('click', function(e) {
+            if (e.target === this) closePreview();
+        });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closePreview(); });
+    }
+
+// ================================
+// AUTOSAVE SYSTEM (LOCAL DB)
+// ================================
+
+const REPORT_DB_NAME = 'regional_bestie_visit_report_db';
+const REPORT_DB_VERSION = 1;
+const REPORT_DB_STORE = 'kv';
+const REPORT_DB_KEY = 'report-state';
+let autosaveTimer = null;
+let suppressAutosave = false;
+let dbPromise = null;
+
+function openReportDB() {
+    if (!('indexedDB' in window)) return Promise.reject(new Error('IndexedDB not supported'));
+    if (dbPromise) return dbPromise;
+
+    dbPromise = new Promise((resolve, reject) => {
+        const request = indexedDB.open(REPORT_DB_NAME, REPORT_DB_VERSION);
+
+        request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(REPORT_DB_STORE)) {
+                db.createObjectStore(REPORT_DB_STORE, { keyPath: 'id' });
+            }
+        };
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+
+    return dbPromise;
+}
+
+async function saveReportState(state) {
+    try {
+        const db = await openReportDB();
+        return await new Promise((resolve, reject) => {
+            const tx = db.transaction(REPORT_DB_STORE, 'readwrite');
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = () => reject(tx.error);
+
+            tx.objectStore(REPORT_DB_STORE).put({
+                id: REPORT_DB_KEY,
+                updatedAt: Date.now(),
+                data: state
+            });
+        });
+    } catch (err) {
+        console.error('Auto save gagal:', err);
+        try {
+            localStorage.setItem(REPORT_DB_KEY, JSON.stringify({ updatedAt: Date.now(), data: state }));
+            return true;
+        } catch (fallbackErr) {
+            console.error('Fallback localStorage gagal:', fallbackErr);
+            return false;
+        }
+    }
+}
+
+async function loadReportState() {
+    try {
+        const db = await openReportDB();
+        return await new Promise((resolve, reject) => {
+            const tx = db.transaction(REPORT_DB_STORE, 'readonly');
+            const req = tx.objectStore(REPORT_DB_STORE).get(REPORT_DB_KEY);
+            req.onsuccess = () => resolve(req.result?.data || null);
+            req.onerror = () => reject(req.error);
+        });
+    } catch (err) {
+        try {
+            const raw = localStorage.getItem(REPORT_DB_KEY);
+            if (!raw) return null;
+            return JSON.parse(raw).data || null;
+        } catch (fallbackErr) {
+            console.error('Load fallback gagal:', fallbackErr);
+            return null;
+        }
+    }
+}
+
+async function clearReportState() {
+    try {
+        const db = await openReportDB();
+        return await new Promise((resolve, reject) => {
+            const tx = db.transaction(REPORT_DB_STORE, 'readwrite');
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = () => reject(tx.error);
+            tx.objectStore(REPORT_DB_STORE).delete(REPORT_DB_KEY);
+        });
+    } catch (err) {
+        localStorage.removeItem(REPORT_DB_KEY);
+        return true;
+    }
+}
+
+function scheduleAutosave() {
+    if (suppressAutosave) return;
+    clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(async () => {
+        await saveReportState(collectSaveData());
+    }, 250);
+}
+
+function setSectionVisibility(toggleId, sectionId, visible) {
+    const toggle = document.getElementById(toggleId);
+    const section = document.getElementById(sectionId);
+    if (toggle) toggle.checked = !!visible;
+    if (section) section.style.display = visible ? 'block' : 'none';
+}
+
+function collectSaveData() {
+    const crewList = [];
+    document.querySelectorAll('#crewItems .list-item').forEach(item => {
+        const nameEl = item.querySelector('.crew-name');
+        const levelEl = item.querySelector('.crew-level-select');
+        crewList.push({
+            name: nameEl ? nameEl.value : '',
+            level: levelEl ? levelEl.value : ''
+        });
+    });
+
+    const collectTable = (tbodyId) => {
+        const rows = [];
+        document.querySelectorAll(`#${tbodyId} tr`).forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (!cells.length) return;
+            rows.push({
+                temuan: cells[0]?.querySelector('textarea')?.value || '',
+                dampak: cells[1]?.querySelector('textarea')?.value || '',
+                penyebab: cells[2]?.querySelector('textarea')?.value || '',
+                tindakan: cells[3]?.querySelector('textarea')?.value || '',
+                deadline: cells[4]?.querySelector('input')?.value || '',
+                hasil: cells[5]?.querySelector('textarea')?.value || ''
+            });
+        });
+        return rows;
+    };
+
+    const collectPhotoGrid = (gridId) => {
+        const cells = [];
+        document.querySelectorAll(`#${gridId} .photo-cell`).forEach(cell => {
+            cells.push({
+                image: cell.querySelector('img')?.src || '',
+                description: cell.querySelector('.photo-description')?.value || ''
+            });
+        });
+        return cells;
+    };
+
+    return {
+        version: 1,
+        nama: document.getElementById('nama')?.value || '',
+        store: document.getElementById('store')?.value || '',
+        tanggal: document.getElementById('tanggal')?.value || '',
+        storeLeader: document.getElementById('storeLeader')?.value || '',
+        storeLeaderLevel: document.getElementById('storeLeaderLevel')?.value || '',
+        shiftLeader: document.getElementById('shiftLeader')?.value || '',
+        shiftLeaderLevel: document.getElementById('shiftLeaderLevel')?.value || '',
+        crewList,
+        qscResultPhoto: {
+            image: document.querySelector('#qscResultPreview img')?.src || '',
+            description: document.getElementById('qscResultDesc')?.value || ''
+        },
+        opiData: collectTable('opiTableBody'),
+        qscData: collectTable('qscTableBody'),
+        findingEvidencePhotos: collectPhotoGrid('findingEvidenceGrid'),
+        correctiveActionPhotos: collectPhotoGrid('correctiveActionGrid'),
+        storeAssignmentLink: document.getElementById('storeAssignmentLink')?.value || '',
+        showQSCResult: document.getElementById('toggleQSCResult')?.checked ?? true,
+        showOPITable: document.getElementById('toggleOPITable')?.checked ?? true,
+        showQSCTable: document.getElementById('toggleQSCTable')?.checked ?? true,
+        showFindingEvidence: document.getElementById('toggleFindingEvidence')?.checked ?? true,
+        showCorrectiveAction: document.getElementById('toggleCorrectiveAction')?.checked ?? true
+    };
+}
+
+function createCrewRow(data = {}) {
+    const div = document.createElement('div');
+    div.className = 'list-item';
+    div.style.gridTemplateColumns = '40px 1fr 100px 60px';
+    const safeName = (data.name || '').replace(/"/g, '&quot;');
+    div.innerHTML = `
+        <span class="row-number">1.</span>
+        <input type="text" placeholder="Crew name" class="crew-name" value="${safeName}">
+        <select class="crew-level-select">
+            <option value="">Select</option>
+            <option value="1A">1A</option>
+            <option value="NS3">NS3</option>
+            <option value="NS1">NS1</option>
+            <option value="MG3">MG3</option>
+            <option value="MG1">MG1</option>
+        </select>
+        <button type="button" class="btn-remove" onclick="removeCrewItem(this)">×</button>
+    `;
+    div.querySelector('.crew-level-select').value = data.level || '';
+    return div;
+}
+
+function createTableRow(data = {}, tableBodyId = '') {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter finding...">${data.temuan || ''}</textarea></td>
+        <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter impact...">${data.dampak || ''}</textarea></td>
+        <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter cause...">${data.penyebab || ''}</textarea></td>
+        <td><textarea oninput="handleTextareaInput(this)" placeholder="Enter corrective action...">${data.tindakan || ''}</textarea></td>
+        <td><input type="date" value="${data.deadline || ''}"></td>
+        <td><textarea oninput="handleTextareaInput(this)" placeholder="Result...">${data.hasil || ''}</textarea></td>
+        <td><button type="button" class="btn-remove" onclick="removeTableRow(this, '${tableBodyId}')">×</button></td>
+    `;
+    return tr;
+}
+
+function createPhotoCellFromData(data = {}, uniqueId) {
+    const imageHtml = data.image
+        ? `<img src="${data.image}" alt="photo">`
+        : `<span class="upload-icon">📷</span><span class="upload-text">Klik untuk upload foto</span>`;
+
+    const safeDesc = (data.description || '').replace(/"/g, '&quot;');
+    return `
+        <div class="photo-cell">
+            <div class="photo-upload-box" onclick="document.getElementById('photo${uniqueId}').click()">
+                <input type="file" id="photo${uniqueId}" accept="image/*" style="display:none"
+                    onchange="handlePhotoCellUpload(this, 'preview${uniqueId}')">
+                <div id="preview${uniqueId}" class="photo-preview ${data.image ? 'has-image' : ''}">
+                    ${imageHtml}
+                </div>
+            </div>
+            <input type="text" id="desc${uniqueId}" class="photo-description" placeholder="Deskripsi foto..." value="${safeDesc}">
+        </div>
+    `;
+}
+
+function createPhotoGridRowFromData(photos = [], startIndex = 0) {
+    const row = document.createElement('div');
+    row.className = 'photo-row';
+    let cells = '';
+    for (let i = 0; i < 4; i++) {
+        const photoData = photos[i] || {};
+        const uniqueId = `${Date.now()}_${startIndex}_${i}_${Math.random().toString(36).slice(2, 7)}`;
+        cells += createPhotoCellFromData(photoData, uniqueId);
+    }
+    row.innerHTML = cells;
+    return row;
+}
+
+function renderCrewList(list = []) {
+    const crewItems = document.getElementById('crewItems');
+    crewItems.innerHTML = '';
+    const crewData = list.length ? list : [{}];
+    crewData.forEach(item => {
+        crewItems.appendChild(createCrewRow(item));
+    });
+    updateCrewNumbers();
+}
+
+function renderTable(tableBodyId, rows = []) {
+    const tbody = document.getElementById(tableBodyId);
+    tbody.innerHTML = '';
+    const dataRows = rows.length ? rows : [{}];
+    dataRows.forEach(row => tbody.appendChild(createTableRow(row, tableBodyId)));
+}
+
+function renderPhotoGrid(gridId, photos = []) {
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = '';
+    if (!photos.length) {
+        for (let i = 0; i < 2; i++) {
+            grid.appendChild(createPhotoGridRowFromData([], i * 4));
+        }
+        return;
+    }
+    for (let i = 0; i < photos.length; i += 4) {
+        grid.appendChild(createPhotoGridRowFromData(photos.slice(i, i + 4), i));
+    }
+}
+
+function applySavedState(data) {
+    document.getElementById('nama').value = data.nama || '';
+    document.getElementById('store').value = data.store || '';
+    document.getElementById('tanggal').value = data.tanggal || '';
+    document.getElementById('storeLeader').value = data.storeLeader || '';
+    document.getElementById('storeLeaderLevel').value = data.storeLeaderLevel || '';
+    document.getElementById('shiftLeader').value = data.shiftLeader || '';
+    document.getElementById('shiftLeaderLevel').value = data.shiftLeaderLevel || '';
+    document.getElementById('storeAssignmentLink').value = data.storeAssignmentLink || '';
+
+    setSectionVisibility('toggleQSCResult', 'qscResultSection', data.showQSCResult ?? true);
+    setSectionVisibility('toggleOPITable', 'opiTableSection', data.showOPITable ?? true);
+    setSectionVisibility('toggleQSCTable', 'qscTableSection', data.showQSCTable ?? true);
+    setSectionVisibility('toggleFindingEvidence', 'findingEvidenceSection', data.showFindingEvidence ?? true);
+    setSectionVisibility('toggleCorrectiveAction', 'correctiveActionSection', data.showCorrectiveAction ?? true);
+
+    renderCrewList(data.crewList || []);
+    renderTable('opiTableBody', data.opiData || []);
+    renderTable('qscTableBody', data.qscData || []);
+    renderPhotoGrid('findingEvidenceGrid', data.findingEvidencePhotos || []);
+    renderPhotoGrid('correctiveActionGrid', data.correctiveActionPhotos || []);
+
+    const qscPreview = document.getElementById('qscResultPreview');
+    if (data.qscResultPhoto?.image) {
+        qscPreview.innerHTML = `<img src="${data.qscResultPhoto.image}" alt="Uploaded photo">`;
+        qscPreview.classList.add('has-image');
+    } else {
+        qscPreview.innerHTML = '<span class="upload-icon">📷</span><span class="upload-text">Klik untuk upload foto QSC</span>';
+        qscPreview.classList.remove('has-image');
+    }
+    document.getElementById('qscResultDesc').value = data.qscResultPhoto?.description || '';
+    updateCrewNumbers();
+}
+
+async function hydrateFromLocalDB() {
+    suppressAutosave = true;
+    const saved = await loadReportState();
+    if (saved) {
+        applySavedState(saved);
+    } else {
+        setSectionVisibility('toggleQSCResult', 'qscResultSection', document.getElementById('toggleQSCResult').checked);
+        setSectionVisibility('toggleOPITable', 'opiTableSection', document.getElementById('toggleOPITable').checked);
+        setSectionVisibility('toggleQSCTable', 'qscTableSection', document.getElementById('toggleQSCTable').checked);
+        setSectionVisibility('toggleFindingEvidence', 'findingEvidenceSection', document.getElementById('toggleFindingEvidence').checked);
+        setSectionVisibility('toggleCorrectiveAction', 'correctiveActionSection', document.getElementById('toggleCorrectiveAction').checked);
+    }
+    suppressAutosave = false;
+}
+
+function confirmClearData() {
+    const ok = window.confirm('Yakin mau hapus semua data tersimpan? Setelah dihapus, data tidak bisa dipulihkan.');
+    if (!ok) return;
+    suppressAutosave = true;
+    clearReportState().then(() => {
+        window.location.reload();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    hydrateFromLocalDB();
+    const form = document.getElementById('reportForm');
+    if (form) {
+        form.addEventListener('input', scheduleAutosave, true);
+        form.addEventListener('change', scheduleAutosave, true);
+    }
+});
+
+window.addEventListener('beforeunload', function() {
+    if (!suppressAutosave) {
+        saveReportState(collectSaveData());
+    }
+});
+
+// Override existing handlers so dynamic actions also autosave
+const _origAddCrewItem = addCrewItem;
+addCrewItem = function() {
+    _origAddCrewItem();
+    updateCrewNumbers();
+    scheduleAutosave();
+};
+
+const _origRemoveCrewItem = removeCrewItem;
+removeCrewItem = function(btn) {
+    _origRemoveCrewItem(btn);
+    updateCrewNumbers();
+    scheduleAutosave();
+};
+
+const _origAddTableRow = addTableRow;
+addTableRow = function(tableBodyId) {
+    _origAddTableRow(tableBodyId);
+    scheduleAutosave();
+};
+
+const _origRemoveTableRow = removeTableRow;
+removeTableRow = function(btn, tableBodyId) {
+    _origRemoveTableRow(btn, tableBodyId);
+    scheduleAutosave();
+};
+
+const _origAddPhotoGridRow = addPhotoGridRow;
+addPhotoGridRow = function(gridId, animate = true) {
+    _origAddPhotoGridRow(gridId, animate);
+    scheduleAutosave();
+};
+
+const _origHandlePhotoUpload = handlePhotoUpload;
+handlePhotoUpload = function(input, previewId, descId) {
+    _origHandlePhotoUpload(input, previewId, descId);
+    setTimeout(scheduleAutosave, 50);
+};
+
+const _origHandlePhotoCellUpload = handlePhotoCellUpload;
+handlePhotoCellUpload = function(input, previewId) {
+    _origHandlePhotoCellUpload(input, previewId);
+    setTimeout(scheduleAutosave, 50);
+};
+
+const _origToggleSection = toggleSection;
+toggleSection = function(sectionId) {
+    _origToggleSection(sectionId);
+    scheduleAutosave();
+};
+
+    
+</script>
+    
+</body>
+</html>
