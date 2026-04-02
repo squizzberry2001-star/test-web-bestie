@@ -31,7 +31,44 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Nama *</label>
-                            <input type="text" id="nama" name="nama" placeholder="Enter full name" required>
+                            <select id="namaDropdown" name="namaDropdown" onchange="handleNamaChange()" required>
+    <option value="">-- Pilih Nama --</option>
+    <option value="Aan Bagus Permana">Aan Bagus Permana</option>
+    <option value="Anggi Novita">Anggi Novita</option>
+    <option value="Aulia Fauziah">Aulia Fauziah</option>
+    <option value="Aulia Puspita Dewi">Aulia Puspita Dewi</option>
+    <option value="Bagus Pradika">Bagus Pradika</option>
+    <option value="Cindy Silvia Sahyu">Cindy Silvia Sahyu</option>
+    <option value="Didin Sarudin">Didin Sarudin</option>
+    <option value="Edi Sukarno">Edi Sukarno</option>
+    <option value="Fadliani Rizky Fidiaz">Fadliani Rizky Fidiaz</option>
+    <option value="Fajar Saputra">Fajar Saputra</option>
+    <option value="Fendi Setiawan">Fendi Setiawan</option>
+    <option value="Fiqri Amatul Firdaus">Fiqri Amatul Firdaus</option>
+    <option value="Karlina Endah Puji Astuti">Karlina Endah Puji Astuti</option>
+    <option value="Malik Ibrahim">Malik Ibrahim</option>
+    <option value="Muhammad Fikri">Muhammad Fikri</option>
+    <option value="Novilya Dwi Rahman">Novilya Dwi Rahman</option>
+    <option value="Rani Ismawati">Rani Ismawati</option>
+    <option value="Rido Yuhanda">Rido Yuhanda</option>
+    <option value="Riki Prasetyawan">Riki Prasetyawan</option>
+    <option value="Rully Alfandi">Rully Alfandi</option>
+    <option value="Seftiana Putri Rahmawati">Seftiana Putri Rahmawati</option>
+    <option value="Tia Fitri">Tia Fitri</option>
+    <option value="Yuyun Yuliyanti">Yuyun Yuliyanti</option>
+    <option value="Andika Ryan Achmada">Andika Ryan Achmada</option>
+    <option value="Dhea Almahdiansyah">Dhea Almahdiansyah</option>
+    <option value="Ilyas Fajar Arisena">Ilyas Fajar Arisena</option>
+    <option value="Nia Tri Rahayu">Nia Tri Rahayu</option>
+    <option value="__MANUAL__">Lainnya...</option>
+</select>
+
+<input
+    type="text"
+    id="namaManual"
+    placeholder="Ketik nama manual"
+    style="display:none; margin-top:8px;"
+>
                         </div>
                         <div class="form-group">
                             <label>Store *</label>
@@ -324,10 +361,51 @@
     <script>
 
 
+function handleNamaChange() {
+    const dropdown = document.getElementById('namaDropdown');
+    const manual = document.getElementById('namaManual');
+    const isManual = dropdown.value === '__MANUAL__';
+
+    manual.style.display = isManual ? 'block' : 'none';
+    manual.required = isManual;
+
+    if (!isManual) {
+        manual.value = '';
+    }
+}
+
+function getNamaAuditor() {
+    const dropdownValue = document.getElementById('namaDropdown')?.value || '';
+    const manualValue = document.getElementById('namaManual')?.value.trim() || '';
+
+    if (dropdownValue === '__MANUAL__') {
+        return manualValue;
+    }
+    return dropdownValue;
+}
+
+function normalizeText(value) {
+    return String(value || '')
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function sanitizeFileName(value) {
+    return String(value || '')
+        .replace(/[\/\\:*?"<>|]/g, ' ')
+        .replace(/\s+/g, '_')
+        .trim();
+}
+
+
+
+
+        
 
 async function uploadPDF(pdfBase64,auditor,toko){
 
-await fetch("https://script.google.com/macros/s/AKfycbzv4u5XpYLZLS2OATVbE8uPsaqGFYV5P-kSY3fJeFb35S8zyKKH3HFHxB8X5vv-Mwwi/exec",{
+await fetch("https://script.google.com/macros/s/AKfycbwRbAGUYMr17XB6Z5WrxbE-MdPsEMf_GRoneHyRDPKCgG2srLfkXqtE-CKEfgO-AV92/exec",{
 
 method:"POST",
 
@@ -603,7 +681,9 @@ function handleTextareaInput(el) {
         };
 
         return {
-            nama: document.getElementById('nama').value.trim() || '-',
+            nama: getNamaAuditor().trim() || '-',
+            namaDropdown: document.getElementById('namaDropdown')?.value || '',
+            namaManual: document.getElementById('namaManual')?.value.trim() || '',
             store: document.getElementById('store').value.trim() || '-',
             tanggal: document.getElementById('tanggal').value.trim() || '-',
             storeLeader: document.getElementById('storeLeader').value.trim() || '-',
@@ -1247,22 +1327,16 @@ doc.text(textLines, px + 2, py + photoH + 5);
             doc.text(`${p}`, PW - M, PH - 8, { align: 'right' });
         }
 
-      const fileName = `Regional_Bestie_Visit_Report_${data.store.replace(/\s+/g,'_')}.pdf`;
+     const fileName = `Regional_Bestie_Visit_Report_${sanitizeFileName(data.store)}.pdf`;
 
-    try {
-        const pdfBase64 = doc.output('datauristring');
-
-        await uploadPDF(pdfBase64, data.nama, data.store);
-
-        console.log("Upload berhasil");
-
-    } catch (err) {
-        console.error("Upload gagal:", err);
-    }
-
-    // ✅ tetap download walaupun upload gagal
-    doc.save(fileName);
+try {
+    const pdfBase64 = doc.output('datauristring');
+    await uploadPDF(pdfBase64, data.nama, data.store);
+} catch (err) {
+    console.error('Upload gagal:', err);
 }
+
+doc.save(fileName);
 
     // Close modal helper (safe no-op when modal tidak dipakai)
     function closePreview() {}
@@ -1430,7 +1504,9 @@ function collectSaveData() {
 
     return {
         version: 1,
-        nama: document.getElementById('nama')?.value || '',
+        namaDropdown: document.getElementById('namaDropdown')?.value || '',
+        namaManual: document.getElementById('namaManual')?.value || '',
+        nama: getNamaAuditor() || '',
         store: document.getElementById('store')?.value || '',
         tanggal: document.getElementById('tanggal')?.value || '',
         storeLeader: document.getElementById('storeLeader')?.value || '',
@@ -1556,7 +1632,9 @@ function renderPhotoGrid(gridId, photos = []) {
 }
 
 function applySavedState(data) {
-    document.getElementById('nama').value = data.nama || '';
+    document.getElementById('namaDropdown').value = data.namaDropdown || '';
+    document.getElementById('namaManual').value = data.namaManual || '';
+    handleNamaChange();
     document.getElementById('store').value = data.store || '';
     document.getElementById('tanggal').value = data.tanggal || '';
     document.getElementById('storeLeader').value = data.storeLeader || '';
