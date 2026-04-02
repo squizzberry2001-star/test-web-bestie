@@ -639,14 +639,14 @@ function handleTextareaInput(el) {
     // ─────────────────────────────────────────────────────────────
     //  PDF DOWNLOAD — LANDSCAPE A4
     // ─────────────────────────────────────────────────────────────
-    async function downloadPDF() {
-        const { jsPDF } = window.jspdf;
-        const data = getFormData();
+   async function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const data = getFormData();
 
-     const doc = new jsPDF({
-    orientation: 'landscape',
-    unit: 'mm',
-    format: [320, 180] // 16:9 ratio
+    const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [320, 180]
     });
 
         const PW = doc.internal.pageSize.getWidth();   // 297
@@ -1249,18 +1249,20 @@ doc.text(textLines, px + 2, py + photoH + 5);
 
       const fileName = `Regional_Bestie_Visit_Report_${data.store.replace(/\s+/g,'_')}.pdf`;
 
-// 1. Convert PDF ke base64
-const pdfBase64 = doc.output('datauristring');
+    try {
+        const pdfBase64 = doc.output('datauristring');
 
-// 2. Upload ke Google Script
-await uploadPDF(
-    pdfBase64,
-    data.nama,
-    data.store
-);
+        await uploadPDF(pdfBase64, data.nama, data.store);
 
-// 3. Baru download ke user
-doc.save(fileName);
+        console.log("Upload berhasil");
+
+    } catch (err) {
+        console.error("Upload gagal:", err);
+    }
+
+    // ✅ tetap download walaupun upload gagal
+    doc.save(fileName);
+}
 
     // Close modal helper (safe no-op when modal tidak dipakai)
     function closePreview() {}
@@ -1272,7 +1274,12 @@ doc.save(fileName);
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closePreview(); });
     }
 
-// ================================
+
+        
+        
+        
+        
+        // ================================
 // AUTOSAVE SYSTEM (LOCAL DB)
 // ================================
 
