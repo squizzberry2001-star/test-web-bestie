@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Real Analytics Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+    font-family: Arial;
+    background:#f5f7fa;
+    margin:0;
+    padding:20px;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.page-btn{
+    padding:10px 16px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.primary{background:#1b8f96;color:white;}
+.secondary{background:#e5e7eb;}
+
+.kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:16px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    padding:16px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+
+.kpi-title{font-size:12px;color:#666;}
+.kpi-value{font-size:28px;font-weight:bold;color:#1b8f96;}
+
+canvas{background:white;padding:10px;border-radius:12px;}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>📊 Real Analytics Dashboard</h2>
+    <button class="page-btn secondary" onclick="goToReport()">← Back to Report</button>
+</div>
+
+<div class="kpi-grid">
+    <div class="card">
+        <div class="kpi-title">Total Report</div>
+        <div class="kpi-value" id="totalReport">0</div>
+    </div>
+    <div class="card">
+        <div class="kpi-title">Average Score</div>
+        <div class="kpi-value" id="avgScore">0</div>
+    </div>
+    <div class="card">
+        <div class="kpi-title">Low Performance</div>
+        <div class="kpi-value" id="lowScore">0</div>
+    </div>
+</div>
+
+<canvas id="chartBar"></canvas>
+<br><br>
+<canvas id="chartLine"></canvas>
+
+<script>
+
+function goToReport(){
+    window.location.href = "index.html";
+}
+
+// 🔥 GANTI DENGAN URL GOOGLE SCRIPT KAMU
+const API_URL = "YOUR_GOOGLE_SCRIPT_URL";
+
+async function loadData(){
+
+    try{
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        renderDashboard(data);
+
+    }catch(err){
+        console.error(err);
+        alert("Gagal load data");
+    }
+}
+
+function renderDashboard(data){
+
+    const total = data.length;
+
+    const avg = total > 0
+        ? (data.reduce((a,b)=>a + (b.score||0),0) / total).toFixed(1)
+        : 0;
+
+    const low = data.filter(d => (d.score||0) < 60).length;
+
+    document.getElementById("totalReport").textContent = total;
+    document.getElementById("avgScore").textContent = avg;
+    document.getElementById("lowScore").textContent = low;
+
+    const labels = data.map(d=>d.toko);
+    const scores = data.map(d=>d.score||0);
+
+    new Chart(document.getElementById("chartBar"),{
+        type:'bar',
+        data:{
+            labels:labels,
+            datasets:[{
+                label:'Score per Store',
+                data:scores
+            }]
+        }
+    });
+
+    new Chart(document.getElementById("chartLine"),{
+        type:'line',
+        data:{
+            labels:data.map(d=>d.tanggal),
+            datasets:[{
+                label:'Trend Score',
+                data:scores
+            }]
+        }
+    });
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>
