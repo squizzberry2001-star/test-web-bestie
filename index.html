@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regional Bestie Visit Report System</title>
+    <title>Regional Bestie Visit Report System — v3 Organized</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -13,20 +13,23 @@
     <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 </head>
 <body>
+    <!-- [VERSION] v3 Organized / row foto default = 4 -->
     <div class="container">
         <div class="header">
             <h1>🏪 Regional Bestie Visit Report</h1>
-            <p>Generate Visit Report</p>
+            <p>Generate Visit Report · Organized v3</p>
         </div>
         
        <div id="reportPage">
     <form id="reportForm" class="form-container">
 
 
-<button type="button" class="page-btn active">REPORT</button>
-<button type="button" class="page-btn" onclick="goToAnalytics()">REAL ANALYTICS</button>
+<div class="page-switcher">
+    <button type="button" class="page-btn active" id="btnReport">REPORT</button>
+    <button type="button" class="page-btn" onclick="goToAnalytics()" id="btnAnalytics">REAL ANALYTICS</button>
+</div>
         
-        <!-- 1. Title Header -->
+        <!-- [REPORT:01] Visit Report / Auditor + Store -->
             <div class="section">
                 <div class="section-header">
                     <div class="icon">1</div>
@@ -83,7 +86,7 @@
                 </div>
             </div>
 
-            <!-- 2. General Information -->
+            <!-- [REPORT:02] General Information / Crew In Charge -->
             <div class="section">
                 <div class="section-header">
                     <div class="icon">2</div>
@@ -165,7 +168,7 @@
                 </div>
             </div>
 
-            <!-- 3. QSC / FAMITRACK Result -->
+            <!-- [REPORT:03] QSC / FAMITRACK Result -->
             <div class="section">
                 <div class="section-header">
                     <div class="icon">3</div>
@@ -192,7 +195,7 @@
                 </div>
             </div>
 
-            <!-- 4. OPI PROJECT OBSERVATION -->
+            <!-- [SECTION-4] OPI Project Observation -->
             <div class="section">
                 <div class="section-header">
                     <div class="icon">4</div>
@@ -239,7 +242,7 @@
                 </div>
             </div>
 
-            <!-- 5. QSC OBSERVATION -->
+            <!-- [SECTION-5] QSC Observation -->
             <div class="section">
                 <div class="section-header">
                     <div class="icon">5</div>
@@ -282,7 +285,7 @@
                 </div>
             </div>
 
-            <!-- 6. FINDING EVIDENCE -->
+            <!-- [SECTION-6] Finding Evidence -->
             <div class="section">
                 <div class="section-header">
                     <div class="icon">6</div>
@@ -300,7 +303,7 @@
                 </div>
             </div>
 
-            <!-- 7. Corrective Action Evidence -->
+            <!-- [REPORT:07] Corrective Action Evidence -->
             <div class="section">
                 <div class="section-header">
                     <div class="icon">7</div>
@@ -318,7 +321,7 @@
                 </div>
             </div>
 
-            <!-- 8. Store Assignment -->
+            <!-- [REPORT:08] Store Assignment / Instructions -->
             <div class="section">
                 <div class="section-header">
                     <div class="icon">8</div>
@@ -348,7 +351,7 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
+            <!-- [REPORT:ACTIONS] Export / PPT / Clear -->
             <div class="button-group">
                 <button type="button" class="btn btn-secondary" onclick="downloadPDF()">
                     <span>⬇️</span> Download PDF
@@ -364,12 +367,23 @@
     </div>
 
     <script>
+// [TOC]
+// NAV -> FORM -> UPLOAD -> INIT -> CREW -> TABLE -> PHOTO -> UTIL -> FORM -> PDF -> STORAGE -> WRAP
 
-function goToAnalytics(){
+// =====================================================
+// [NAV] Page navigation
+// =====================================================
+function goToAnalytics() {
     window.location.href = "analytics.html";
 }
 
-        
+function goToTutorial() {
+    window.location.href = "tutorial.html";
+}
+
+// =====================================================
+// [FORM] Name normalization / auditor selection
+// =====================================================
 function handleNamaChange() {
     const dropdown = document.getElementById('namaDropdown');
     const manual = document.getElementById('namaManual');
@@ -393,6 +407,9 @@ function getNamaAuditor() {
     return dropdownValue;
 }
 
+// =====================================================
+// [UTIL] Helper functions
+// =====================================================
 function normalizeText(value) {
     return String(value || '')
         .toLowerCase()
@@ -407,55 +424,43 @@ function sanitizeFileName(value) {
         .trim();
 }
 
+// =====================================================
+// [UPLOAD] Send PDF to Google Apps Script
+// =====================================================
+async function uploadPDF(pdfBase64, auditor, toko) {
+    await fetch("https://script.google.com/macros/s/AKfycbybqCTpezmJ-C59oO9u7k3LDae2WZ4I8OnjmYNCXSEwWTn7IZI-gXW7_7QMW5aM9FZn/exec", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            auditor: auditor,
+            toko: toko,
+            pdf: pdfBase64
+        })
+    });
+}
 
+// =====================================================
+// [INIT] App bootstrap / initial render
+// =====================================================
+const DEFAULT_PHOTO_ROWS = 4;
 
-
-        
-
-async function uploadPDF(pdfBase64,auditor,toko){
-
-await fetch("https://script.google.com/macros/s/AKfycbybqCTpezmJ-C59oO9u7k3LDae2WZ4I8OnjmYNCXSEwWTn7IZI-gXW7_7QMW5aM9FZn/exec",{
-
-method:"POST",
-
-body:JSON.stringify({
-
-auditor:auditor,
-toko:toko,
-pdf:pdfBase64
-
-})
-
+document.addEventListener('DOMContentLoaded', function() {
+    for (let i = 0; i < DEFAULT_PHOTO_ROWS; i++) {
+        addPhotoGridRow('findingEvidenceGrid', false);
+        addPhotoGridRow('correctiveActionGrid', false);
+    }
+    updateCrewNumbers();
 });
 
-}
-
-
-
-      
-
-
-        function goToTutorial() {
-    window.location.href = "tutorial.html";
-}
-    // ─────────────────────────────────────────────────────────────
-    //  INIT
-    // ─────────────────────────────────────────────────────────────
-    document.addEventListener('DOMContentLoaded', function() {
-        for (let i = 0; i < 2; i++) {
-            addPhotoGridRow('findingEvidenceGrid', false);
-            addPhotoGridRow('correctiveActionGrid', false);
-        }
-        updateCrewNumbers();
-    });
-
-    function toggleSection(sectionId) {
+function toggleSection(sectionId) {
         const section = document.getElementById(sectionId);
         section.style.display = section.style.display === 'none' ? 'block' : 'none';
     }
 
+    // [CREW] Crew management
     // ─────────────────────────────────────────────────────────────
-    //  CREW
     // ─────────────────────────────────────────────────────────────
     function addCrewItem() {
         const crewItems = document.getElementById('crewItems');
@@ -491,8 +496,8 @@ pdf:pdfBase64
         });
     }
 
+    // [TABLE] Dynamic rows for observation tables
     // ─────────────────────────────────────────────────────────────
-    //  TABLE ROWS
     // ─────────────────────────────────────────────────────────────
     function addTableRow(tableBodyId) {
     const tbody = document.getElementById(tableBodyId);
@@ -520,8 +525,8 @@ pdf:pdfBase64
         if (rows.length > 1) { btn.parentElement.parentElement.remove(); }
     }
 
+    // [PHOTO] Photo upload, compression, and grids
     // ─────────────────────────────────────────────────────────────
-    //  PHOTOS
     // ─────────────────────────────────────────────────────────────
     function compressImageFile(file, maxDimension = 1280, quality = 0.78) {
         return new Promise((resolve, reject) => {
@@ -607,6 +612,7 @@ function handleTextareaInput(el) {
         }
     }
 
+    // [PHOTO] Add a new photo row
     function addPhotoGridRow(gridId, animate = true) {
         const grid = document.getElementById(gridId);
         const currentRows = grid.querySelectorAll('.photo-row').length;
@@ -621,8 +627,8 @@ function handleTextareaInput(el) {
         grid.appendChild(row);
     }
 
+    // [UTIL] Date formatting helpers
     // ─────────────────────────────────────────────────────────────
-    //  UTILITIES
     // ─────────────────────────────────────────────────────────────
     function formatDate(dateStr) {
         if (!dateStr || dateStr === '-') return '-';
@@ -640,8 +646,8 @@ function handleTextareaInput(el) {
         return `${String(date.getDate()).padStart(2,'0')} ${months[date.getMonth()]} ${date.getFullYear()}`;
     }
 
+    // [FORM] Aggregate all form data
     // ─────────────────────────────────────────────────────────────
-    //  FORM DATA
     // ─────────────────────────────────────────────────────────────
     function getFormData() {
         const crewItems = document.querySelectorAll('#crewItems .list-item');
@@ -725,8 +731,8 @@ function handleTextareaInput(el) {
         return photos;
     }
 
+    // [PDF] Generate PDF report
     // ─────────────────────────────────────────────────────────────
-    //  PDF DOWNLOAD — LANDSCAPE A4
     // ─────────────────────────────────────────────────────────────
    async function downloadPDF() {
     const { jsPDF } = window.jspdf;
@@ -1348,6 +1354,9 @@ doc.text(textLines, px + 2, py + photoH + 5);
         doc.save(fileName);
     }
 
+    // =====================================================
+    // [MISC] Modal helpers / cleanup
+    // =====================================================
     // Close modal helper (safe no-op when modal tidak dipakai)
     function closePreview() {}
     const previewModal = document.getElementById('previewModal');
@@ -1363,10 +1372,12 @@ doc.text(textLines, px + 2, py + photoH + 5);
         
         
         
-        // ================================
+        // [STORAGE] Autosave & IndexedDB local persistence
+// ================================
 // AUTOSAVE SYSTEM (LOCAL DB)
 // ================================
 
+// [STORAGE] Local persistence store
 const REPORT_DB_NAME = 'regional_bestie_visit_report_db';
 const REPORT_DB_VERSION = 1;
 const REPORT_DB_STORE = 'kv';
@@ -1627,11 +1638,12 @@ function renderTable(tableBodyId, rows = []) {
     dataRows.forEach(row => tbody.appendChild(createTableRow(row, tableBodyId)));
 }
 
+// [PHOTO] Render photo grid from saved data
 function renderPhotoGrid(gridId, photos = []) {
     const grid = document.getElementById(gridId);
     grid.innerHTML = '';
     if (!photos.length) {
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < DEFAULT_PHOTO_ROWS; i++) {
             grid.appendChild(createPhotoGridRowFromData([], i * 4));
         }
         return;
@@ -1716,7 +1728,9 @@ window.addEventListener('beforeunload', function() {
     }
 });
 
-// Override existing handlers so dynamic actions also autosave
+// =====================================================
+// [WRAP] Auto-save hooks for dynamic elements
+// =====================================================
 const _origAddCrewItem = addCrewItem;
 addCrewItem = function() {
     _origAddCrewItem();
