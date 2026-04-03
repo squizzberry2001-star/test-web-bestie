@@ -738,6 +738,20 @@ function handleTextareaInput(el) {
         format: [320, 180]
     });
 
+    // semua isi PDF kamu dari cover sampai final slide tetap di sini
+
+    const fileName = `Regional_Bestie_Visit_Report_${sanitizeFileName(data.store)}.pdf`;
+
+    try {
+        const pdfBase64 = doc.output('datauristring');
+        await uploadPDF(pdfBase64, data.nama, data.store);
+    } catch (err) {
+        console.error('Upload gagal:', err);
+    }
+
+    doc.save(fileName);
+}
+
         const PW = doc.internal.pageSize.getWidth();   // 297
         const PH = doc.internal.pageSize.getHeight();  // 210
         const M  = 12; // margin
@@ -1344,18 +1358,17 @@ doc.text(textLines, px + 2, py + photoH + 5);
 
     // isi PDF kamu...
 
-    const fileName = `Regional_Bestie_Visit_Report_${sanitizeFileName(data.store)}.pdf`;
+   const fileName = `Regional_Bestie_Visit_Report_${sanitizeFileName(data.store)}.pdf`;
 
     try {
         const pdfBase64 = doc.output('datauristring');
-
         await uploadPDF(pdfBase64, data.nama, data.store);
-
     } catch (err) {
         console.error('Upload gagal:', err);
     }
 
     doc.save(fileName);
+}
 
 } // 🔥 INI WAJIB ADA (penutup function)
 
@@ -1778,7 +1791,6 @@ toggleSection = function(sectionId) {
     scheduleAutosave();
 };
         
-</script>
-    
+</script>  
 </body>
 </html>
