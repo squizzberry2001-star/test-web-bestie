@@ -12,6 +12,102 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+
+    <style>
+    .stacked-observation .table-toolbar {
+        margin-bottom: 14px;
+    }
+    .stacked-observation .table-toolbar-right {
+        display: none;
+    }
+    .stacked-observation .table-toolbar-note {
+        font-size: 12px;
+        color: #475569;
+    }
+    .stacked-observation .table-container {
+        overflow: visible;
+    }
+    .stacked-observation .dynamic-table,
+    .stacked-observation .dynamic-table tbody,
+    .stacked-observation .dynamic-table tr,
+    .stacked-observation .dynamic-table td {
+        display: block;
+        width: 100%;
+    }
+    .stacked-observation .dynamic-table thead {
+        display: none;
+    }
+    .stacked-observation .dynamic-table tr {
+        margin-bottom: 16px;
+        padding: 16px;
+        border: 1.5px solid #d6e0ea;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+    }
+    .stacked-observation .dynamic-table td {
+        border: none;
+        padding: 0 0 12px;
+        background: transparent !important;
+    }
+    .stacked-observation .dynamic-table td:last-child {
+        padding-bottom: 0;
+    }
+    .stacked-observation .dynamic-table td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #27415e;
+        margin-bottom: 6px;
+    }
+    .stacked-observation .dynamic-table td[data-label="Aksi"]::before {
+        display: none;
+    }
+    .stacked-observation .dynamic-table td input[type="date"],
+    .stacked-observation .dynamic-table td textarea {
+        width: 100%;
+    }
+    .textarea-bullet-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .btn-inline-bullet {
+        align-self: flex-start;
+        padding: 7px 12px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #0f766e;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .btn-inline-bullet:hover {
+        background: #f8fafc;
+    }
+    .table-footer-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 14px;
+    }
+    .table-footer-actions .btn {
+        min-width: 150px;
+    }
+    @media (max-width: 768px) {
+        .stacked-observation .dynamic-table tr {
+            padding: 12px;
+        }
+        .table-footer-actions {
+            justify-content: stretch;
+        }
+        .table-footer-actions .btn {
+            width: 100%;
+        }
+    }
+    </style>
+
 </head>
 <body>
     <div class="container app-shell">
@@ -177,7 +273,7 @@
                             <p>Unggah foto hasil QSC/Famitrack dengan kualitas yang mudah dibaca.</p>
                         </div>
                         <label class="toggle-container">
-                            <input type="checkbox" id="toggleQSCResult" checked>
+                            <input type="checkbox" id="toggleQSCResult">
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
@@ -198,7 +294,7 @@
                     </div>
                 </section>
 
-                <section class="section">
+                <section class="section stacked-observation">
                     <div class="section-header">
                         <div class="icon">4</div>
                         <div class="section-title-wrap">
@@ -206,19 +302,16 @@
                             <p>Tabel observasi sekarang sudah stabil, support bullet point, dan lebih nyaman di desktop maupun mobile.</p>
                         </div>
                         <label class="toggle-container">
-                            <input type="checkbox" id="toggleOPITable" checked>
+                            <input type="checkbox" id="toggleOPITable">
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
                     <div class="section-content" id="opiTableSection">
                         <div class="table-toolbar">
                             <div class="table-toolbar-left">
-                                <span class="toolbar-badge">Tekan Enter untuk bullet berikutnya</span>
+                                <span class="toolbar-badge">Bullet point tersedia di bawah setiap field</span>
                             </div>
-                            <div class="table-toolbar-right">
-                                <button type="button" class="btn btn-ghost" data-bullet-target="opiTableBody">• Insert Bullet</button>
-                                <button type="button" class="btn btn-add" data-add-row="opiTableBody">+ Add Row</button>
-                            </div>
+                            <div class="table-toolbar-note">Tekan Enter setelah bullet untuk membuat bullet berikutnya.</div>
                         </div>
                         <div class="table-container">
                             <table class="dynamic-table" id="opiTable">
@@ -238,10 +331,13 @@
                         </div>
                         <p class="table-note">Isi berdasarkan checklist OPI. Bullet point akan tetap dibawa ke PDF dengan format yang rapi.</p>
                         <p class="field-note">Link referensi: <a href="https://tinyurl.com/opi-report" target="_blank" rel="noopener noreferrer">Klik untuk buka form report OPI</a></p>
+                        <div class="table-footer-actions">
+                            <button type="button" class="btn btn-add" data-add-row="opiTableBody">+ Add Row</button>
+                        </div>
                     </div>
                 </section>
 
-                <section class="section">
+                <section class="section stacked-observation">
                     <div class="section-header">
                         <div class="icon">5</div>
                         <div class="section-title-wrap">
@@ -249,19 +345,16 @@
                             <p>Format dan perilaku input disamakan dengan tabel OPI agar proses audit lebih konsisten.</p>
                         </div>
                         <label class="toggle-container">
-                            <input type="checkbox" id="toggleQSCTable" checked>
+                            <input type="checkbox" id="toggleQSCTable">
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
                     <div class="section-content" id="qscTableSection">
                         <div class="table-toolbar">
                             <div class="table-toolbar-left">
-                                <span class="toolbar-badge">Bullet point support aktif</span>
+                                <span class="toolbar-badge">Bullet point tersedia di bawah setiap field</span>
                             </div>
-                            <div class="table-toolbar-right">
-                                <button type="button" class="btn btn-ghost" data-bullet-target="qscTableBody">• Insert Bullet</button>
-                                <button type="button" class="btn btn-add" data-add-row="qscTableBody">+ Add Row</button>
-                            </div>
+                            <div class="table-toolbar-note">Tekan Enter setelah bullet untuk membuat bullet berikutnya.</div>
                         </div>
                         <div class="table-container">
                             <table class="dynamic-table" id="qscTable">
@@ -279,6 +372,9 @@
                                 <tbody id="qscTableBody"></tbody>
                             </table>
                         </div>
+                        <div class="table-footer-actions">
+                            <button type="button" class="btn btn-add" data-add-row="qscTableBody">+ Add Row</button>
+                        </div>
                     </div>
                 </section>
 
@@ -290,7 +386,7 @@
                             <p>Grid foto dibuat lebih modern dan description box otomatis menyesuaikan tinggi teks.</p>
                         </div>
                         <label class="toggle-container">
-                            <input type="checkbox" id="toggleFindingEvidence" checked>
+                            <input type="checkbox" id="toggleFindingEvidence">
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
@@ -308,7 +404,7 @@
                             <p>Desain foto dan keterangan disamakan dengan finding evidence supaya output audit tetap konsisten.</p>
                         </div>
                         <label class="toggle-container">
-                            <input type="checkbox" id="toggleCorrectiveAction" checked>
+                            <input type="checkbox" id="toggleCorrectiveAction">
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
@@ -375,7 +471,8 @@
     <script>
     const APP = {
         API_URL: 'https://script.google.com/macros/s/AKfycbw7V9zRV1DTVqHvfxjMWTcP6Mze-IkocGmOlykxrSO41ggkGyLedhEIsYt2dTFKkESU/exec',
-        DEFAULT_PHOTO_ROWS: 4,
+        DEFAULT_FINDING_PHOTO_ROWS: 1,
+        DEFAULT_CORRECTIVE_PHOTO_ROWS: 1,
         PHOTO_CELLS_PER_ROW: 4,
         MAX_TABLE_ROWS: 50,
         MAX_CREW: 10,
@@ -459,10 +556,6 @@
             button.addEventListener('click', () => addPhotoGridRow(button.dataset.addPhotoRow));
         });
 
-        document.querySelectorAll('[data-bullet-target]').forEach(button => {
-            button.addEventListener('click', () => insertBulletForTarget(button.dataset.bulletTarget));
-        });
-
         document.getElementById('toggleQSCResult').addEventListener('change', () => toggleSection('qscResultSection'));
         document.getElementById('toggleOPITable').addEventListener('change', () => toggleSection('opiTableSection'));
         document.getElementById('toggleQSCTable').addEventListener('change', () => toggleSection('qscTableSection'));
@@ -527,8 +620,13 @@
         }
 
         if (!document.querySelector('#findingEvidenceGrid .photo-row')) {
-            for (let i = 0; i < APP.DEFAULT_PHOTO_ROWS; i += 1) {
+            for (let i = 0; i < APP.DEFAULT_FINDING_PHOTO_ROWS; i += 1) {
                 addPhotoGridRow('findingEvidenceGrid', false, []);
+            }
+        }
+
+        if (!document.querySelector('#correctiveActionGrid .photo-row')) {
+            for (let i = 0; i < APP.DEFAULT_CORRECTIVE_PHOTO_ROWS; i += 1) {
                 addPhotoGridRow('correctiveActionGrid', false, []);
             }
         }
@@ -590,6 +688,18 @@
         if (!element) return;
         element.style.height = 'auto';
         element.style.height = `${Math.max(element.scrollHeight, 54)}px`;
+    }
+
+    function insertBulletIntoTextarea(textarea) {
+        if (!textarea) return;
+        const start = textarea.selectionStart ?? textarea.value.length;
+        const end = textarea.selectionEnd ?? textarea.value.length;
+        const needsBreak = textarea.value && start > 0 && textarea.value[start - 1] !== '\n';
+        const insertion = `${needsBreak ? '\n' : ''}${APP.BULLET_PREFIX}`;
+        textarea.setRangeText(insertion, start, end, 'end');
+        textarea.focus();
+        autoResizeTextarea(textarea);
+        scheduleAutosave();
     }
 
     function handleBulletKeydown(event) {
@@ -684,17 +794,31 @@
     }
 
     function createObservationRow(tableBodyId, data = {}) {
+        const bulletField = (label, value, placeholder, extraClass = '') => `
+            <td data-label="${label}">
+                <div class="textarea-bullet-wrap">
+                    <textarea class="bullet-textarea ${extraClass}" placeholder="${placeholder}">${escapeHtml(value || '')}</textarea>
+                    <button type="button" class="btn-inline-bullet" aria-label="Tambah bullet point">• Bullet Point</button>
+                </div>
+            </td>`;
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td data-label="Temuan"><textarea class="bullet-textarea" placeholder="Masukkan temuan...">${escapeHtml(data.temuan || '')}</textarea></td>
-            <td data-label="Dampak"><textarea class="bullet-textarea" placeholder="Masukkan dampak...">${escapeHtml(data.dampak || '')}</textarea></td>
-            <td data-label="Penyebab"><textarea class="bullet-textarea" placeholder="Masukkan penyebab...">${escapeHtml(data.penyebab || '')}</textarea></td>
-            <td data-label="Tindakan Perbaikan"><textarea class="bullet-textarea" placeholder="Masukkan tindakan perbaikan...">${escapeHtml(data.tindakan || '')}</textarea></td>
+            ${bulletField('Temuan', data.temuan, 'Masukkan temuan...')}
+            ${bulletField('Dampak', data.dampak, 'Masukkan dampak...')}
+            ${bulletField('Penyebab', data.penyebab, 'Masukkan penyebab...')}
+            ${bulletField('Tindakan Perbaikan', data.tindakan, 'Masukkan tindakan perbaikan...')}
             <td data-label="Tanggal Perbaikan / Deadline"><input type="date" value="${escapeHtml(data.deadline || '')}"></td>
-            <td data-label="Hasil"><textarea class="bullet-textarea" placeholder="Masukkan hasil...">${escapeHtml(data.hasil || '')}</textarea></td>
+            ${bulletField('Hasil', data.hasil, 'Masukkan hasil...')}
             <td data-label="Aksi"><button type="button" class="btn-remove" aria-label="Hapus baris">×</button></td>
         `;
         tr.querySelector('.btn-remove').addEventListener('click', () => removeTableRow(tr, tableBodyId));
+        tr.querySelectorAll('.btn-inline-bullet').forEach(button => {
+            button.addEventListener('click', () => {
+                const textarea = button.closest('.textarea-bullet-wrap')?.querySelector('textarea');
+                insertBulletIntoTextarea(textarea);
+            });
+        });
         tr.querySelectorAll('textarea').forEach(autoResizeTextarea);
         return tr;
     }
@@ -1043,10 +1167,10 @@
         doc.text('Laporan audit kunjungan store', 16, 40);
 
         doc.setFillColor(255, 255, 255);
-        doc.roundedRect(16, 88, pageWidth - 32, 84, 8, 8, 'F');
+        doc.roundedRect(16, 82, pageWidth - 32, 94, 8, 8, 'F');
         doc.setDrawColor(217, 226, 236);
         doc.setLineWidth(0.8);
-        doc.roundedRect(16, 88, pageWidth - 32, 84, 8, 8, 'S');
+        doc.roundedRect(16, 82, pageWidth - 32, 94, 8, 8, 'S');
 
         const coverFields = [
             ['Nama Auditor', data.nama],
@@ -1055,7 +1179,7 @@
             ['Total Temuan', String((data.opiData?.length || 0) + (data.qscData?.length || 0))]
         ];
 
-        let fieldY = 108;
+        let fieldY = 100;
         coverFields.forEach(([label, value]) => {
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(11);
@@ -1065,18 +1189,15 @@
             doc.setFontSize(15);
             doc.setTextColor(16, 42, 67);
             doc.text(String(value || '-'), 28, fieldY + 10);
-            fieldY += 18;
+            fieldY += 17;
         });
 
         doc.setFillColor(20, 184, 166);
-        doc.roundedRect(pageWidth - 104, 102, 70, 42, 8, 8, 'F');
+        doc.roundedRect(pageWidth - 102, 104, 68, 38, 8, 8, 'F');
         doc.setTextColor(255, 255, 255);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(18);
-        doc.text('Audit', pageWidth - 69, 123, { align: 'center' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(11);
-        doc.text('Professional Report', pageWidth - 69, 134, { align: 'center' });
+        doc.text('Audit', pageWidth - 68, 127, { align: 'center' });
         doc.setTextColor(16, 42, 67);
     }
 
@@ -1568,11 +1689,16 @@
         dataRows.forEach(row => tbody.appendChild(createObservationRow(tableBodyId, row)));
     }
 
+    function getDefaultPhotoRows(gridId) {
+        if (gridId === 'correctiveActionGrid') return APP.DEFAULT_CORRECTIVE_PHOTO_ROWS;
+        return APP.DEFAULT_FINDING_PHOTO_ROWS;
+    }
+
     function renderPhotoGrid(gridId, photos = []) {
         const grid = document.getElementById(gridId);
         grid.innerHTML = '';
         if (!photos.length) {
-            for (let i = 0; i < APP.DEFAULT_PHOTO_ROWS; i += 1) {
+            for (let i = 0; i < getDefaultPhotoRows(gridId); i += 1) {
                 grid.appendChild(createPhotoRow([], i));
             }
             return;
@@ -1594,11 +1720,11 @@
         document.getElementById('shiftLeaderLevel').value = saved.shiftLeaderLevel || '';
         document.getElementById('storeAssignmentLink').value = saved.storeAssignmentLink || 'https://tinyurl.com/store-caassignment';
 
-        document.getElementById('toggleQSCResult').checked = saved.showQSCResult ?? true;
-        document.getElementById('toggleOPITable').checked = saved.showOPITable ?? true;
-        document.getElementById('toggleQSCTable').checked = saved.showQSCTable ?? true;
-        document.getElementById('toggleFindingEvidence').checked = saved.showFindingEvidence ?? true;
-        document.getElementById('toggleCorrectiveAction').checked = saved.showCorrectiveAction ?? true;
+        document.getElementById('toggleQSCResult').checked = saved.showQSCResult ?? false;
+        document.getElementById('toggleOPITable').checked = saved.showOPITable ?? false;
+        document.getElementById('toggleQSCTable').checked = saved.showQSCTable ?? false;
+        document.getElementById('toggleFindingEvidence').checked = saved.showFindingEvidence ?? false;
+        document.getElementById('toggleCorrectiveAction').checked = saved.showCorrectiveAction ?? false;
 
         toggleSection('qscResultSection', false);
         toggleSection('opiTableSection', false);
