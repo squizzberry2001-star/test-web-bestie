@@ -17,7 +17,7 @@
     <div class="container">
         <div class="header">
             <h1>🏪 Regional Bestie Visit Report</h1>
-            <p>Generate Visit Report · Organized v3</p>
+            <p>Generate Visit Report</p>
         </div>
         
        <div id="reportPage">
@@ -368,7 +368,17 @@
 
     <script>
 // [TOC]
-// NAV -> FORM -> UPLOAD -> INIT -> CREW -> TABLE -> PHOTO -> UTIL -> FORM -> PDF -> STORAGE -> WRAP
+// [NAV] Page navigation
+// [FORM] Name normalization & data collection
+// [UTIL] Generic helpers
+// [UPLOAD] Send PDF to Google Apps Script
+// [INIT] Bootstrap / initial render
+// [CREW] Crew management
+// [TABLE] Dynamic observation tables
+// [PHOTO] Photo upload / compression / grid
+// [PDF] PDF generator
+// [STORAGE] IndexedDB / localStorage autosave
+// [WRAP] Auto-save hooks & overrides
 
 // =====================================================
 // [NAV] Page navigation
@@ -460,8 +470,8 @@ function toggleSection(sectionId) {
     }
 
     // [CREW] Crew management
-    // ─────────────────────────────────────────────────────────────
-    // ─────────────────────────────────────────────────────────────
+    // ------------------------------------------------------
+    // ------------------------------------------------------
     function addCrewItem() {
         const crewItems = document.getElementById('crewItems');
         const currentCount = crewItems.querySelectorAll('.list-item').length;
@@ -497,8 +507,8 @@ function toggleSection(sectionId) {
     }
 
     // [TABLE] Dynamic rows for observation tables
-    // ─────────────────────────────────────────────────────────────
-    // ─────────────────────────────────────────────────────────────
+    // ------------------------------------------------------
+    // ------------------------------------------------------
     function addTableRow(tableBodyId) {
     const tbody = document.getElementById(tableBodyId);
 
@@ -526,9 +536,10 @@ function toggleSection(sectionId) {
     }
 
     // [PHOTO] Photo upload, compression, and grids
-    // ─────────────────────────────────────────────────────────────
-    // ─────────────────────────────────────────────────────────────
-    function compressImageFile(file, maxDimension = 1280, quality = 0.78) {
+    // ------------------------------------------------------
+    // ------------------------------------------------------
+    // [PHOTO:CORE] Compress uploaded image before preview
+function compressImageFile(file, maxDimension = 1280, quality = 0.78) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -560,7 +571,8 @@ function toggleSection(sectionId) {
         });
     }
 
-    async function handlePhotoUpload(input, previewId, descId) {
+    // [PHOTO:UPLOAD] Upload photo for QSC/result preview
+async function handlePhotoUpload(input, previewId, descId) {
         const file = input.files[0];
         if (file) {
             const preview = document.getElementById(previewId);
@@ -585,7 +597,8 @@ function handleTextareaInput(el) {
     }
 }
 
-    function createPhotoCell(index, sectionName) {
+    // [PHOTO:GRID] Build a single photo cell
+function createPhotoCell(index, sectionName) {
         const uniqueId = Date.now() + index + Math.random().toString(36).substr(2,5);
         return `
             <div class="photo-cell">
@@ -602,7 +615,8 @@ function handleTextareaInput(el) {
         `;
     }
 
-    async function handlePhotoCellUpload(input, previewId) {
+    // [PHOTO:UPLOAD] Upload photo for grid cell
+async function handlePhotoCellUpload(input, previewId) {
         const file = input.files[0];
         if (file) {
             const preview = document.getElementById(previewId);
@@ -613,7 +627,8 @@ function handleTextareaInput(el) {
     }
 
     // [PHOTO] Add a new photo row
-    function addPhotoGridRow(gridId, animate = true) {
+    // [PHOTO:GRID] Add a new photo row
+function addPhotoGridRow(gridId, animate = true) {
         const grid = document.getElementById(gridId);
         const currentRows = grid.querySelectorAll('.photo-row').length;
         if (currentRows >= 50) { alert('Maksimal 50 baris foto'); return; }
@@ -628,9 +643,10 @@ function handleTextareaInput(el) {
     }
 
     // [UTIL] Date formatting helpers
-    // ─────────────────────────────────────────────────────────────
-    // ─────────────────────────────────────────────────────────────
-    function formatDate(dateStr) {
+    // ------------------------------------------------------
+    // ------------------------------------------------------
+    // [UTIL:DATE] Date formatting helpers
+function formatDate(dateStr) {
         if (!dateStr || dateStr === '-') return '-';
         const date = new Date(dateStr);
         const day = String(date.getDate()).padStart(2, '0');
@@ -647,9 +663,10 @@ function handleTextareaInput(el) {
     }
 
     // [FORM] Aggregate all form data
-    // ─────────────────────────────────────────────────────────────
-    // ─────────────────────────────────────────────────────────────
-    function getFormData() {
+    // ------------------------------------------------------
+    // ------------------------------------------------------
+    // [FORM:COLLECT] Aggregate all form data
+function getFormData() {
         const crewItems = document.querySelectorAll('#crewItems .list-item');
         const crewList = [];
         crewItems.forEach(item => {
@@ -732,9 +749,10 @@ function handleTextareaInput(el) {
     }
 
     // [PDF] Generate PDF report
-    // ─────────────────────────────────────────────────────────────
-    // ─────────────────────────────────────────────────────────────
-   async function downloadPDF() {
+    // ------------------------------------------------------
+    // ------------------------------------------------------
+   // [PDF:GENERATE] Build PDF, upload to GAS, then download
+async function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const data = getFormData();
 
@@ -831,10 +849,7 @@ function handleTextareaInput(el) {
                 doc.addImage(b64, 'JPEG', ix, iy, iw, ih);
             } catch(e) {}
         }
-
-  // ╔═══════════════════════════════════════════════════════════╗
- // ║  SLIDE 1 — COVER                                         ║
- // ╚═══════════════════════════════════════════════════════════╝
+// [PDF:COVER] Slide 1 — Cover
 
 // background putih
 doc.setFillColor(...C.white);
@@ -866,10 +881,7 @@ doc.text(data.nama || '-', M+35, 135);
 
 doc.text('Store :', M, 150);
 doc.text(data.store || '-', M+35, 150);
-
-        // ╔═══════════════════════════════════════════════════════════╗
-        // ║  SLIDE 2 — GENERAL INFORMATION                           ║
-        // ╚═══════════════════════════════════════════════════════════╝
+// [PDF:SECTION-2] Slide 2 — General Information
       doc.addPage();
 
 // ================= HEADER =================
@@ -929,10 +941,7 @@ doc.autoTable({
     tableWidth: 'auto',
     margin: { left: 12, right: 12 }
 });
-
-        // ╔═══════════════════════════════════════════════════════════╗
-        // ║  SLIDE 3 — QSC/FAMITRACK RESULT                          ║
-        // ╚═══════════════════════════════════════════════════════════╝
+// [PDF:SECTION-3] Slide 3 — QSC/FAMITRACK Result
         if (data.showQSCResult) {
             doc.addPage();
             y = M;
@@ -958,10 +967,7 @@ doc.autoTable({
                 doc.text('📷', PW / 2, y + photoH / 2, { align: 'center' });
             }
         }
-
-        // ╔═══════════════════════════════════════════════════════════╗
-        // ║  SLIDE 4 — OPI PROJECT OBSERVATION (Title)                ║
-        // ╚═══════════════════════════════════════════════════════════╝
+// [PDF:SECTION-4] Slide 4 — OPI Project Observation
         if (data.showOPITable) {
             doc.addPage();
             // Title slide
@@ -978,7 +984,7 @@ doc.autoTable({
             doc.setTextColor(100, 100, 100);
             doc.text('Findings & Root Cause Analysis', M, PH / 2 + 5);
 
-            // ═══ OPI TABLE SLIDES ═══
+            // [PDF:SECTION-4:TAB] OPI table pages
             if (data.opiData.length > 0) {
                 const ROWS_PER_PAGE = 3;
                 const chunks = [];
@@ -1042,10 +1048,7 @@ tableWidth: CW,
                 });
             }
         }
-
-        // ╔═══════════════════════════════════════════════════════════╗
-        // ║  SLIDE 5 — QSC OBSERVATION (Title + Table)               ║
-        // ╚═══════════════════════════════════════════════════════════╝
+// [PDF:SECTION-5] Slide 5 — QSC Observation
         if (data.showQSCTable) {
             doc.addPage();
             // Title slide
@@ -1062,7 +1065,7 @@ tableWidth: CW,
             doc.setTextColor(100, 100, 100);
             doc.text('Findings & Root Cause Analysis', M, PH / 2 + 5);
 
-            // ═══ QSC TABLE SLIDES ═══
+            // [PDF:SECTION-5:TAB] QSC table pages
             if (data.qscData.length > 0) {
                 const ROWS_PER_PAGE = 3;
                 const chunks = [];
@@ -1119,10 +1122,7 @@ tableWidth: CW,
                 });
             }
         }
-
-                // ╔═══════════════════════════════════════════════════════════╗
-        // ║  SLIDE 6 — FINDING EVIDENCE (Title + Photos)             ║
-        // ╚═══════════════════════════════════════════════════════════╝
+// [PDF:SECTION-6] Slide 6 — Finding Evidence
         if (data.showFindingEvidence) {
             doc.addPage();
             // Title slide
@@ -1139,7 +1139,7 @@ tableWidth: CW,
             doc.setTextColor(100, 100, 100);
             doc.text('of OPI & QSC Observation', M, PH / 2 + 5);
 
-            // Photo slides - 5 columns × 2 rows = 10 photos
+            // [PDF:SECTION-6:GRID] 10 photos per page
             const PHOTOS_PP = 10;
             const photos = data.findingEvidencePhotos;
             const chunks = [];
@@ -1194,10 +1194,7 @@ doc.text(textLines, px + 2, py + photoH + 5);
                 }
             }
         }
-
-        // ╔═══════════════════════════════════════════════════════════╗
-        // ║  SLIDE 7 — CORRECTIVE ACTION (Title + Photos)            ║
-        // ╚═══════════════════════════════════════════════════════════╝
+// [PDF:SECTION-7] Slide 7 — Corrective Action Evidence
         if (data.showCorrectiveAction) {
             doc.addPage();
             // Title slide
@@ -1214,7 +1211,7 @@ doc.text(textLines, px + 2, py + photoH + 5);
             doc.setTextColor(100, 100, 100);
             doc.text('Evidence & Result by Regional Bestie', M, PH / 2);
 
-            // Photo slides - 5 columns × 2 rows = 10 photos
+            // [PDF:SECTION-6:GRID] 10 photos per page
             const PHOTOS_PP = 10;
             const photos = data.correctiveActionPhotos;
             const chunks = [];
@@ -1266,10 +1263,7 @@ doc.text(textLines, px + 2, py + photoH + 5);
                 }
             }
         }
-
-        // ╔═══════════════════════════════════════════════════════════╗
-        // ║  SLIDE 8 — STORE ASSIGNMENT (Title)                       ║
-        // ╚═══════════════════════════════════════════════════════════╝
+// [PDF:SECTION-8] Slide 8 — Store Assignment
         doc.addPage();
         doc.setFillColor(...C.white);
         doc.rect(0, 0, PW, PH, 'F');
@@ -1284,11 +1278,11 @@ doc.text(textLines, px + 2, py + photoH + 5);
         doc.setTextColor(100, 100, 100);
         doc.text('Corrective Action Purpose', M, PH / 2 + 5);
 
-        // ═══ FINAL SLIDE — MEKANISME PELAPORAN ═══
+        // [PDF:FINAL] Reporting mechanism
         doc.addPage();
         y = M;
         
-        // Link header
+        // [PDF:FINAL] Link header
         doc.setFillColor(...C.teal);
         doc.rect(M, y, CW, 10, 'F');
         doc.setFontSize(14);
@@ -1301,14 +1295,14 @@ doc.text(textLines, px + 2, py + photoH + 5);
         );
         y += 16;
         
-        // Mekanisme title
+        // [PDF:FINAL] Title
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(12);
         doc.setTextColor(...C.black);
         doc.text('Mekanisme pelaporan', M, y);
         y += 8;
         
-        // List
+        // [PDF:FINAL] Main list
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(10);
         const mekText = [
@@ -1325,14 +1319,14 @@ doc.text(textLines, px + 2, py + photoH + 5);
             });
         });
         
-        // Sub-list
+        // [PDF:FINAL] Sub list
         const subList = ['a. Regional Manager', 'b. Area Manager', 'c. Regional Bestie', 'd. FMCU (Bu Sari, Pak Ami, Pak Aufar)'];
         subList.forEach(item => {
             doc.text(item, M + 15, y);
             y += 6;
         });
 
-        // Page numbers
+        // [PDF:FINAL] Page numbers
         const totalPages = doc.internal.getNumberOfPages();
         for (let p = 1; p <= totalPages; p++) {
             doc.setPage(p);
@@ -1357,7 +1351,7 @@ doc.text(textLines, px + 2, py + photoH + 5);
     // =====================================================
     // [MISC] Modal helpers / cleanup
     // =====================================================
-    // Close modal helper (safe no-op when modal tidak dipakai)
+    // [MISC] Close modal helper (safe no-op when modal tidak dipakai)
     function closePreview() {}
     const previewModal = document.getElementById('previewModal');
     if (previewModal) {
@@ -1374,10 +1368,10 @@ doc.text(textLines, px + 2, py + photoH + 5);
         
         // [STORAGE] Autosave & IndexedDB local persistence
 // ================================
-// AUTOSAVE SYSTEM (LOCAL DB)
+// [STORAGE] AUTOSAVE SYSTEM (LOCAL DB)
 // ================================
 
-// [STORAGE] Local persistence store
+// [STORAGE:DB] Local persistence store
 const REPORT_DB_NAME = 'regional_bestie_visit_report_db';
 const REPORT_DB_VERSION = 1;
 const REPORT_DB_STORE = 'kv';
@@ -1386,6 +1380,7 @@ let autosaveTimer = null;
 let suppressAutosave = false;
 let dbPromise = null;
 
+// [STORAGE:DB] IndexedDB helpers
 function openReportDB() {
     if (!('indexedDB' in window)) return Promise.reject(new Error('IndexedDB not supported'));
     if (dbPromise) return dbPromise;
@@ -1469,6 +1464,7 @@ async function clearReportState() {
     }
 }
 
+// [STORAGE:AUTO] Autosave scheduler
 function scheduleAutosave() {
     if (suppressAutosave) return;
     clearTimeout(autosaveTimer);
@@ -1484,6 +1480,7 @@ function setSectionVisibility(toggleId, sectionId, visible) {
     if (section) section.style.display = visible ? 'block' : 'none';
 }
 
+// [STORAGE:AUTO] Build save payload from the current UI state
 function collectSaveData() {
     const crewList = [];
     document.querySelectorAll('#crewItems .list-item').forEach(item => {
@@ -1612,7 +1609,7 @@ function createPhotoGridRowFromData(photos = [], startIndex = 0) {
     const row = document.createElement('div');
     row.className = 'photo-row';
     let cells = '';
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < PHOTO_CELLS_PER_ROW; i++) {
         const photoData = photos[i] || {};
         const uniqueId = `${Date.now()}_${startIndex}_${i}_${Math.random().toString(36).slice(2, 7)}`;
         cells += createPhotoCellFromData(photoData, uniqueId);
@@ -1638,7 +1635,7 @@ function renderTable(tableBodyId, rows = []) {
     dataRows.forEach(row => tbody.appendChild(createTableRow(row, tableBodyId)));
 }
 
-// [PHOTO] Render photo grid from saved data
+// [PHOTO:GRID] Render photo grid from saved data
 function renderPhotoGrid(gridId, photos = []) {
     const grid = document.getElementById(gridId);
     grid.innerHTML = '';
@@ -1648,7 +1645,7 @@ function renderPhotoGrid(gridId, photos = []) {
         }
         return;
     }
-    for (let i = 0; i < photos.length; i += 4) {
+    for (let i = 0; i < photos.length; i += PHOTO_CELLS_PER_ROW) {
         grid.appendChild(createPhotoGridRowFromData(photos.slice(i, i + 4), i));
     }
 }
