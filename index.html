@@ -417,11 +417,27 @@
                 method: 'GET',
                 cache: 'no-store'
             });
-            const payload = await response.json();
-            if (!response.ok || payload.status !== 'success') {
-                throw new Error(payload.message || 'Health check gagal');
+
+            const raw = await response.text();
+            let payload = {};
+            try {
+                payload = raw ? JSON.parse(raw) : {};
+            } catch (parseError) {
+                payload = {};
             }
-            setApiConnectionStatus('Terhubung ke Google Apps Script, Drive, dan Spreadsheet.', 'success');
+
+            const okStatuses = ['success', 'Success', 'ok', 'OK'];
+            if (response.ok && okStatuses.includes(String(payload.status || '').trim())) {
+                setApiConnectionStatus('Terhubung ke Google Apps Script, Drive, dan Spreadsheet.', 'success');
+                return;
+            }
+
+            if (response.ok) {
+                setApiConnectionStatus('Endpoint backend terjangkau, tetapi belum punya health check standar. Upload akan diverifikasi saat download PDF.', 'pending');
+                return;
+            }
+
+            throw new Error(payload.message || `Health check gagal (HTTP ${response.status})`);
         } catch (error) {
             console.error('API health check gagal', error);
             setApiConnectionStatus('Koneksi backend belum valid. Update dan deploy ulang Apps Script agar PDF bisa sinkron ke Drive dan Spreadsheet.', 'error');
@@ -1321,11 +1337,15 @@
     }
 
     async function uploadPDF(payload) {
+        const formBody = new URLSearchParams();
+        Object.entries(payload).forEach(([key, value]) => {
+            formBody.append(key, value == null ? '' : String(value));
+        });
+
         const response = await fetch(APP.API_URL, {
             method: 'POST',
             cache: 'no-store',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: formBody
         });
 
         const raw = await response.text();
@@ -1337,7 +1357,8 @@
             throw new Error(raw || 'Response backend bukan JSON yang valid.');
         }
 
-        if (!response.ok || result.status !== 'success') {
+        const normalizedStatus = String(result.status || '').trim().toLowerCase();
+        if (!response.ok || !['success', 'ok'].includes(normalizedStatus)) {
             throw new Error(result.message || `Upload gagal (HTTP ${response.status})`);
         }
 
