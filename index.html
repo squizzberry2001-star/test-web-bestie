@@ -108,6 +108,206 @@
     }
     </style>
 
+
+    <style>
+    .secret-access-btn {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        border: none;
+        background: rgba(15, 118, 110, 0.24);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+        opacity: 0.26;
+        z-index: 45;
+        cursor: pointer;
+        transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+    .secret-access-btn:hover,
+    .secret-access-btn:focus-visible {
+        opacity: 0.86;
+        transform: scale(1.08);
+        background: rgba(15, 118, 110, 0.9);
+        outline: none;
+    }
+    .secret-auth-modal,
+    .secret-activity-drawer {
+        position: fixed;
+        z-index: 60;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+    .secret-auth-modal.active,
+    .secret-activity-drawer.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .secret-auth-modal {
+        inset: 0;
+        background: rgba(15, 23, 42, 0.48);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        backdrop-filter: blur(6px);
+    }
+    .secret-auth-card {
+        width: min(420px, 100%);
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+        transform: translateY(10px);
+    }
+    .secret-auth-modal.active .secret-auth-card { transform: translateY(0); }
+    .secret-auth-card h3 {
+        margin: 0 0 8px;
+        font-size: 22px;
+        color: #102a43;
+    }
+    .secret-auth-card p {
+        margin: 0 0 16px;
+        color: #52606d;
+        line-height: 1.5;
+    }
+    .secret-auth-card input {
+        width: 100%;
+        padding: 13px 15px;
+        border-radius: 14px;
+        border: 1px solid #cbd5e1;
+        font-size: 16px;
+        letter-spacing: 0.16em;
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    .secret-auth-error {
+        min-height: 20px;
+        color: #c62828;
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+    .secret-auth-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+    .secret-activity-drawer {
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: min(430px, 100vw);
+        background: #f8fafc;
+        box-shadow: -18px 0 40px rgba(15, 23, 42, 0.22);
+        transform: translateX(100%);
+        display: flex;
+        flex-direction: column;
+    }
+    .secret-activity-drawer.active { transform: translateX(0); }
+    .secret-drawer-header {
+        padding: 20px 20px 14px;
+        background: linear-gradient(135deg, #102a43, #0f766e);
+        color: #fff;
+    }
+    .secret-drawer-header h3 {
+        margin: 0;
+        font-size: 20px;
+    }
+    .secret-drawer-header p {
+        margin: 6px 0 0;
+        opacity: 0.9;
+        font-size: 13px;
+        line-height: 1.45;
+    }
+    .secret-drawer-toolbar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #fff;
+        flex-wrap: wrap;
+    }
+    .secret-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        padding: 16px 18px 4px;
+    }
+    .secret-summary-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 12px 14px;
+        box-shadow: 0 8px 16px rgba(15, 23, 42, 0.04);
+    }
+    .secret-summary-card span {
+        display: block;
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+    .secret-summary-card strong {
+        font-size: 22px;
+        color: #102a43;
+    }
+    .secret-log-list {
+        padding: 14px 18px 20px;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex: 1;
+    }
+    .secret-log-item {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 12px 14px;
+        box-shadow: 0 8px 16px rgba(15, 23, 42, 0.04);
+    }
+    .secret-log-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 6px;
+        font-size: 12px;
+        color: #64748b;
+        flex-wrap: wrap;
+    }
+    .secret-log-item strong {
+        display: block;
+        color: #102a43;
+        margin-bottom: 4px;
+        font-size: 14px;
+    }
+    .secret-log-item p {
+        margin: 0;
+        color: #334155;
+        font-size: 13px;
+        line-height: 1.45;
+    }
+    .secret-empty {
+        margin: auto 18px;
+        padding: 26px 20px;
+        text-align: center;
+        border: 1px dashed #cbd5e1;
+        border-radius: 18px;
+        color: #64748b;
+        background: #fff;
+    }
+    @media (max-width: 640px) {
+        .secret-access-btn { right: 12px; bottom: 12px; }
+        .secret-summary-grid { grid-template-columns: 1fr; }
+        .secret-activity-drawer { width: 100vw; }
+    }
+    </style>
+
 </head>
 <body>
     <div class="container app-shell">
@@ -468,9 +668,59 @@
 
     <div class="toast" id="toast"></div>
 
+    <button type="button" class="secret-access-btn" id="secretAccessBtn" aria-label="Buka panel aktivitas"></button>
+
+    <div class="secret-auth-modal" id="secretAuthModal" aria-hidden="true">
+        <div class="secret-auth-card">
+            <h3>Panel Aktivitas</h3>
+            <p>Masukkan kode akses untuk melihat aktivitas penggunaan web ini.</p>
+            <input type="password" id="secretAuthInput" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="••••••">
+            <div class="secret-auth-error" id="secretAuthError"></div>
+            <div class="secret-auth-actions">
+                <button type="button" class="btn btn-ghost" id="secretAuthCancelBtn">Tutup</button>
+                <button type="button" class="btn btn-primary" id="secretAuthSubmitBtn">Buka Panel</button>
+            </div>
+        </div>
+    </div>
+
+    <aside class="secret-activity-drawer" id="secretActivityDrawer" aria-hidden="true">
+        <div class="secret-drawer-header">
+            <h3>Aktivitas Penggunaan</h3>
+            <p>Panel ini menampilkan aktivitas semua user yang mengakses web berdasarkan nama secara real time.</p>
+        </div>
+        <div class="secret-drawer-toolbar">
+            <span class="toolbar-badge" id="remoteUsageBadge">Kode akses aktif</span>
+            <div class="table-toolbar-right">
+                <button type="button" class="btn btn-ghost" id="refreshActivityLogBtn">Refresh</button>
+                <button type="button" class="btn btn-primary" id="closeSecretDrawerBtn">Tutup</button>
+            </div>
+        </div>
+        <div class="secret-summary-grid">
+            <div class="secret-summary-card"><span>Total event hari ini</span><strong id="activityTotalCount">0</strong></div>
+            <div class="secret-summary-card"><span>User aktif sekarang</span><strong id="activityTodayCount">0</strong></div>
+            <div class="secret-summary-card"><span>User unik hari ini</span><strong id="activityDownloadCount">0</strong></div>
+            <div class="secret-summary-card"><span>Download PDF hari ini</span><strong id="activityErrorCount">0</strong></div>
+        </div>
+        <div class="card-heading" style="margin:18px 0 10px;">
+            <div>
+                <h3>User Aktif Sekarang</h3>
+                <p id="activeUsersMeta">Menunggu data real time...</p>
+            </div>
+        </div>
+        <div class="secret-log-list" id="activeUsersList"></div>
+        <div class="card-heading" style="margin:18px 0 10px;">
+            <div>
+                <h3>Riwayat Aktivitas Terbaru</h3>
+                <p id="recentEventsMeta">Aktivitas terbaru seluruh user.</p>
+            </div>
+        </div>
+        <div class="secret-log-list" id="secretLogList"></div>
+    </aside>
+
+
     <script>
     const APP = {
-        API_URL: 'https://script.google.com/macros/s/AKfycbw7V9zRV1DTVqHvfxjMWTcP6Mze-IkocGmOlykxrSO41ggkGyLedhEIsYt2dTFKkESU/exec',
+        API_URL: 'https://script.google.com/macros/s/AKfycbxlOv3bqiIlMrwGRZ3YfZihcDsST0Sa3hjzhBgB5klGIsHIErZRKuDlI75AzFMA-vyG/exec',
         DEFAULT_FINDING_PHOTO_ROWS: 1,
         DEFAULT_CORRECTIVE_PHOTO_ROWS: 1,
         PHOTO_CELLS_PER_ROW: 4,
@@ -487,7 +737,22 @@
         autosaveTimer: null,
         suppressAutosave: false,
         dbPromise: null,
-        activeDownload: false
+        activeDownload: false,
+        usageHeartbeatTimer: null,
+        usageSessionId: null,
+        lastPresenceName: '',
+        remoteUsageMode: false
+    };
+
+
+    const SECRET_ACTIVITY = {
+        AUTH_CODE: '607090',
+        STORAGE_KEY: 'rbvr-usage-activity-v1',
+        SESSION_KEY: 'rbvr-usage-activity-auth',
+        SESSION_ID_KEY: 'rbvr-usage-session-id',
+        MAX_LOGS: 250,
+        HEARTBEAT_MS: 25000,
+        ACTIVE_WINDOW_MS: 120000
     };
 
     document.addEventListener('DOMContentLoaded', initializeApp);
@@ -497,7 +762,9 @@
         setDefaultVisitDate();
         bootstrapDynamicSections();
         hydrateFromLocalDB();
+        initializeRealtimeUsageTracking();
         checkApiConnection();
+        logActivity('open_app', 'Membuka halaman report audit.');
     }
 
     function setApiConnectionStatus(message, tone = 'pending') {
@@ -526,11 +793,13 @@
             const okStatuses = ['success', 'Success', 'ok', 'OK'];
             if (response.ok && okStatuses.includes(String(payload.status || '').trim())) {
                 setApiConnectionStatus('Terhubung ke Google Apps Script, Drive, dan Spreadsheet.', 'success');
+                logActivity('backend_check', 'Health check backend sukses.');
                 return;
             }
 
             if (response.ok) {
                 setApiConnectionStatus('Endpoint backend terjangkau, tetapi belum punya health check standar. Upload akan diverifikasi saat download PDF.', 'pending');
+                logActivity('backend_check', 'Endpoint backend terjangkau tetapi belum punya health check standar.');
                 return;
             }
 
@@ -538,6 +807,7 @@
         } catch (error) {
             console.error('API health check gagal', error);
             setApiConnectionStatus('Koneksi backend belum valid. Update dan deploy ulang Apps Script agar PDF bisa sinkron ke Drive dan Spreadsheet.', 'error');
+            logActivity('backend_check_error', error.message || 'Health check gagal.');
         }
     }
 
@@ -570,6 +840,7 @@
             });
         });
 
+        bindSecretActivityEvents();
         document.addEventListener('input', handleGlobalInput, true);
         document.addEventListener('change', handleGlobalChange, true);
         document.addEventListener('keydown', handleBulletKeydown, true);
@@ -589,6 +860,9 @@
     function handleGlobalChange(event) {
         if (event.target.matches('input, textarea, select')) {
             scheduleAutosave();
+        }
+        if (['namaDropdown', 'namaManual', 'store'].includes(event.target.id)) {
+            syncRealtimeUsage('identity_update', 'Identitas user diperbarui.', true);
         }
     }
 
@@ -660,6 +934,7 @@
         manual.style.display = isManual ? 'block' : 'none';
         manual.required = isManual;
         if (!isManual) manual.value = '';
+        syncRealtimeUsage('identity_update', 'Nama auditor diperbarui.', true);
     }
 
     function getNamaAuditor() {
@@ -772,6 +1047,7 @@
         }
         crewItems.appendChild(createCrewRow(data));
         updateCrewNumbers();
+        logActivity('crew_add', `Menambah crew store. Total crew sekarang ${currentCount + 1}.`);
         scheduleAutosave();
     }
 
@@ -784,6 +1060,7 @@
         }
         element.remove();
         updateCrewNumbers();
+        logActivity('crew_remove', 'Menghapus satu baris crew store.');
         scheduleAutosave();
     }
 
@@ -831,6 +1108,8 @@
             return;
         }
         tbody.appendChild(createObservationRow(tableBodyId, data));
+        const sectionName = tableBodyId === 'opiTableBody' ? 'OPI Observation' : 'QSC Observation';
+        logActivity('row_add', `Menambah row pada ${sectionName}. Total row sekarang ${rowCount + 1}.`);
         if (schedule) scheduleAutosave();
     }
 
@@ -841,6 +1120,8 @@
             return;
         }
         row.remove();
+        const sectionName = tableBodyId === 'opiTableBody' ? 'OPI Observation' : 'QSC Observation';
+        logActivity('row_remove', `Menghapus row pada ${sectionName}.`);
         scheduleAutosave();
     }
 
@@ -881,6 +1162,7 @@
         const dataUrl = await compressImageFile(file);
         preview.innerHTML = `<img src="${dataUrl}" alt="Uploaded photo">`;
         preview.classList.add('has-image');
+        logActivity('photo_upload', 'Upload foto QSC / Famitrack.');
         scheduleAutosave();
     }
 
@@ -891,6 +1173,9 @@
         const dataUrl = await compressImageFile(file);
         preview.innerHTML = `<img src="${dataUrl}" alt="Uploaded photo">`;
         preview.classList.add('has-image');
+        const gridId = input.closest('.photo-grid')?.id || 'photoGrid';
+        const sectionLabel = gridId === 'findingEvidenceGrid' ? 'Finding Evidence' : (gridId === 'correctiveActionGrid' ? 'Corrective Action' : 'Photo Grid');
+        logActivity('photo_upload', `Upload foto pada section ${sectionLabel}.`);
         scheduleAutosave();
     }
 
@@ -943,6 +1228,8 @@
             return;
         }
         grid.appendChild(createPhotoRow(photos, currentRows));
+        const sectionName = gridId === 'findingEvidenceGrid' ? 'Finding Evidence' : (gridId === 'correctiveActionGrid' ? 'Corrective Action' : 'Photo Grid');
+        logActivity('photo_row_add', `Menambah 1 row foto pada ${sectionName}. Total row sekarang ${currentRows + 1}.`);
         if (schedule) scheduleAutosave();
     }
 
@@ -958,6 +1245,14 @@
         const toggle = document.getElementById(toggleId);
         if (!section || !toggle) return;
         section.style.display = toggle.checked ? 'block' : 'none';
+        const sectionMap = {
+            qscResultSection: 'QSC / Famitrack Result',
+            opiTableSection: 'OPI Observation',
+            qscTableSection: 'QSC Observation',
+            findingEvidenceSection: 'Finding Evidence',
+            correctiveActionSection: 'Corrective Action'
+        };
+        logActivity('toggle_section', `${sectionMap[sectionId] || sectionId} diubah ke ${toggle.checked ? 'ON' : 'OFF'}.`);
         if (saveAfter) scheduleAutosave();
     }
 
@@ -1499,6 +1794,7 @@
         }
 
         state.activeDownload = true;
+        logActivity('download_pdf', 'Memulai proses generate PDF.');
         const downloadButton = document.getElementById('downloadPdfBtn');
         downloadButton.disabled = true;
         showLoading('Menyiapkan PDF', 'Mengumpulkan data form dan memvalidasi input...', 10);
@@ -1565,17 +1861,21 @@
                     : 'PDF berhasil dibuat dan sinkronisasi backend selesai.';
                 showToast(successMessage, 'success');
                 setApiConnectionStatus('Sinkronisasi backend aktif dan berhasil menulis data terbaru.', 'success');
+                logActivity('upload_success', successMessage, { fileUrl: uploadResult.fileUrl || '' });
             } catch (uploadError) {
                 console.error('Upload gagal', uploadError);
                 setApiConnectionStatus(`Upload backend gagal: ${uploadError.message}`, 'error');
                 showToast(`PDF berhasil dibuat, tetapi sinkron backend gagal: ${uploadError.message}`, 'warning');
+                logActivity('upload_error', uploadError.message || 'Sinkron backend gagal.');
             }
 
             updateLoading('Memulai download file PDF...', 100);
             doc.save(fileName);
+            logActivity('download_saved', `File PDF disimpan: ${fileName}`);
         } catch (error) {
             console.error(error);
             showToast('Terjadi error saat membuat PDF. Cek console untuk detail.', 'error');
+            logActivity('download_error', error.message || 'Generate PDF gagal.');
         } finally {
             setTimeout(hideLoading, 320);
             downloadButton.disabled = false;
@@ -1764,10 +2064,355 @@
     async function confirmClearData() {
         const confirmed = window.confirm('Yakin mau hapus semua data tersimpan? Data form dan autosave lokal akan dibersihkan.');
         if (!confirmed) return;
+        logActivity('clear_form', 'Menghapus seluruh data form lokal.');
         state.suppressAutosave = true;
         await clearReportState();
         window.location.reload();
     }
+
+    function bindSecretActivityEvents() {
+        document.getElementById('secretAccessBtn')?.addEventListener('click', openSecretPanel);
+        document.getElementById('secretAuthCancelBtn')?.addEventListener('click', closeSecretAuthModal);
+        document.getElementById('secretAuthSubmitBtn')?.addEventListener('click', submitSecretAuth);
+        document.getElementById('closeSecretDrawerBtn')?.addEventListener('click', closeSecretActivityDrawer);
+        document.getElementById('refreshActivityLogBtn')?.addEventListener('click', renderSecretActivityPanel);
+        document.getElementById('secretAuthModal')?.addEventListener('click', event => {
+            if (event.target.id === 'secretAuthModal') closeSecretAuthModal();
+        });
+        document.getElementById('secretAuthInput')?.addEventListener('keydown', event => {
+            if (event.key === 'Enter') submitSecretAuth();
+            if (event.key === 'Escape') closeSecretAuthModal();
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') {
+                closeSecretAuthModal();
+                closeSecretActivityDrawer();
+            }
+        });
+    }
+
+    function getUsageSessionId() {
+        if (state.usageSessionId) return state.usageSessionId;
+        let sessionId = sessionStorage.getItem(SECRET_ACTIVITY.SESSION_ID_KEY);
+        if (!sessionId) {
+            sessionId = `sess_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+            sessionStorage.setItem(SECRET_ACTIVITY.SESSION_ID_KEY, sessionId);
+        }
+        state.usageSessionId = sessionId;
+        return sessionId;
+    }
+
+    function getTrackedUserName() {
+        const name = getNamaAuditor().trim();
+        return name && name !== '__MANUAL__' ? name : '';
+    }
+
+    function getTrackedStoreName() {
+        return document.getElementById('store')?.value.trim() || '';
+    }
+
+    function readActivityLogs() {
+        try {
+            const raw = localStorage.getItem(SECRET_ACTIVITY.STORAGE_KEY);
+            const parsed = raw ? JSON.parse(raw) : [];
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function writeActivityLogs(logs) {
+        try {
+            localStorage.setItem(SECRET_ACTIVITY.STORAGE_KEY, JSON.stringify(logs));
+        } catch (error) {
+            console.error('Gagal menyimpan activity log', error);
+        }
+    }
+
+    function buildRealtimeUsageBody(eventType, detail, meta = {}, appendHistory = true) {
+        const params = new URLSearchParams();
+        params.append('action', 'track_usage');
+        params.append('eventType', eventType || 'heartbeat');
+        params.append('detail', detail || 'Aktivitas web');
+        params.append('auditor', getTrackedUserName());
+        params.append('store', getTrackedStoreName());
+        params.append('page', 'report');
+        params.append('sessionId', getUsageSessionId());
+        params.append('appendHistory', appendHistory ? '1' : '0');
+        params.append('userAgent', navigator.userAgent || '');
+        params.append('url', window.location.href || '');
+        Object.entries(meta || {}).forEach(([key, value]) => {
+            params.append(`meta_${key}`, value == null ? '' : String(value));
+        });
+        return params;
+    }
+
+    async function sendRealtimeUsage(eventType, detail, meta = {}, appendHistory = true) {
+        const currentName = getTrackedUserName();
+        if (!currentName) return false;
+        try {
+            const response = await fetch(APP.API_URL, {
+                method: 'POST',
+                cache: 'no-store',
+                body: buildRealtimeUsageBody(eventType, detail, meta, appendHistory)
+            });
+            const raw = await response.text();
+            let payload = {};
+            try {
+                payload = raw ? JSON.parse(raw) : {};
+            } catch (parseError) {
+                payload = {};
+            }
+            const okStatuses = ['success', 'Success', 'ok', 'OK'];
+            if (response.ok && okStatuses.includes(String(payload.status || '').trim())) {
+                state.remoteUsageMode = true;
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Realtime usage sync gagal', error);
+            return false;
+        }
+    }
+
+    function syncRealtimeUsage(eventType = 'heartbeat', detail = 'Ping aktivitas user.', appendHistory = false, meta = {}) {
+        const currentName = getTrackedUserName();
+        if (!currentName) return;
+        state.lastPresenceName = currentName;
+        sendRealtimeUsage(eventType, detail, meta, appendHistory).then(success => {
+            if (success && document.getElementById('secretActivityDrawer')?.classList.contains('active')) {
+                renderSecretActivityPanel();
+            }
+        });
+    }
+
+    function initializeRealtimeUsageTracking() {
+        getUsageSessionId();
+        syncRealtimeUsage('session_start', 'User membuka web report.', true);
+        clearInterval(state.usageHeartbeatTimer);
+        state.usageHeartbeatTimer = setInterval(() => {
+            syncRealtimeUsage('heartbeat', 'Heartbeat aktivitas user.', false);
+        }, SECRET_ACTIVITY.HEARTBEAT_MS);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                syncRealtimeUsage('tab_focus', 'User kembali aktif di tab report.', false);
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            const name = getTrackedUserName();
+            if (!name) return;
+            const body = buildRealtimeUsageBody('leave_page', 'User meninggalkan halaman report.', {}, true);
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(APP.API_URL, body);
+            }
+        });
+    }
+
+    function logActivity(type, detail, meta = {}) {
+        try {
+            const logs = readActivityLogs();
+            logs.unshift({
+                id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+                type,
+                detail,
+                meta,
+                time: new Date().toISOString()
+            });
+            writeActivityLogs(logs.slice(0, SECRET_ACTIVITY.MAX_LOGS));
+            const currentName = getTrackedUserName();
+            if (currentName) {
+                sendRealtimeUsage(type, detail, meta, true);
+            }
+            if (document.getElementById('secretActivityDrawer')?.classList.contains('active')) {
+                renderSecretActivityPanel();
+            }
+        } catch (error) {
+            console.error('Gagal menulis activity log', error);
+        }
+    }
+
+    function openSecretPanel() {
+        const isAuthed = sessionStorage.getItem(SECRET_ACTIVITY.SESSION_KEY) === '1';
+        if (isAuthed) {
+            openSecretActivityDrawer();
+            return;
+        }
+        document.getElementById('secretAuthModal')?.classList.add('active');
+        document.getElementById('secretAuthModal')?.setAttribute('aria-hidden', 'false');
+        document.getElementById('secretAuthError').textContent = '';
+        const input = document.getElementById('secretAuthInput');
+        if (input) {
+            input.value = '';
+            setTimeout(() => input.focus(), 30);
+        }
+    }
+
+    function closeSecretAuthModal() {
+        document.getElementById('secretAuthModal')?.classList.remove('active');
+        document.getElementById('secretAuthModal')?.setAttribute('aria-hidden', 'true');
+    }
+
+    function submitSecretAuth() {
+        const input = document.getElementById('secretAuthInput');
+        const errorEl = document.getElementById('secretAuthError');
+        const code = String(input?.value || '').trim();
+        if (code === SECRET_ACTIVITY.AUTH_CODE) {
+            sessionStorage.setItem(SECRET_ACTIVITY.SESSION_KEY, '1');
+            closeSecretAuthModal();
+            openSecretActivityDrawer();
+            logActivity('secret_access', 'Panel aktivitas dibuka dengan kode akses yang valid.');
+            return;
+        }
+        if (errorEl) errorEl.textContent = 'Kode akses tidak valid.';
+        logActivity('secret_access_failed', 'Percobaan membuka panel aktivitas gagal.');
+    }
+
+    function openSecretActivityDrawer() {
+        document.getElementById('secretActivityDrawer')?.classList.add('active');
+        document.getElementById('secretActivityDrawer')?.setAttribute('aria-hidden', 'false');
+        renderSecretActivityPanel();
+    }
+
+    function closeSecretActivityDrawer() {
+        document.getElementById('secretActivityDrawer')?.classList.remove('active');
+        document.getElementById('secretActivityDrawer')?.setAttribute('aria-hidden', 'true');
+    }
+
+    function getActivitySummary(logs) {
+        const today = new Date().toISOString().slice(0, 10);
+        return {
+            total: logs.length,
+            today: logs.filter(item => String(item.time || '').slice(0, 10) === today).length,
+            downloads: logs.filter(item => ['download_pdf', 'download_saved', 'upload_success'].includes(item.type)).length,
+            backendErrors: logs.filter(item => ['backend_check_error', 'upload_error', 'download_error'].includes(item.type)).length
+        };
+    }
+
+    function formatActivityTime(value) {
+        if (!value) return '-';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return String(value);
+        return new Intl.DateTimeFormat('id-ID', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        }).format(date);
+    }
+
+    function prettifyActivityType(type) {
+        const labels = {
+            session_start: 'Masuk Web',
+            identity_update: 'Update Nama',
+            heartbeat: 'Heartbeat',
+            tab_focus: 'Tab Aktif',
+            leave_page: 'Tutup Halaman',
+            open_app: 'Buka Web',
+            backend_check: 'Backend Check',
+            backend_check_error: 'Backend Error',
+            crew_add: 'Tambah Crew',
+            crew_remove: 'Hapus Crew',
+            row_add: 'Tambah Row',
+            row_remove: 'Hapus Row',
+            photo_row_add: 'Tambah Row Foto',
+            photo_upload: 'Upload Foto',
+            toggle_section: 'Toggle Section',
+            download_pdf: 'Generate PDF',
+            upload_success: 'Backend Sync',
+            upload_error: 'Backend Sync Error',
+            download_saved: 'Download Selesai',
+            download_error: 'PDF Error',
+            clear_form: 'Clear Form',
+            secret_access: 'Panel Dibuka',
+            secret_access_failed: 'Akses Ditolak'
+        };
+        return labels[type] || type;
+    }
+
+    async function fetchRemoteUsageDashboard() {
+        const response = await fetch(`${APP.API_URL}?action=usage_dashboard&code=${encodeURIComponent(SECRET_ACTIVITY.AUTH_CODE)}&ts=${Date.now()}`, {
+            method: 'GET',
+            cache: 'no-store'
+        });
+        const payload = await response.json();
+        if (!response.ok || String(payload.status || '').trim().toLowerCase() !== 'success') {
+            throw new Error(payload.message || `Dashboard usage gagal (HTTP ${response.status})`);
+        }
+        return payload;
+    }
+
+    function renderUserCards(targetId, users, emptyText) {
+        const container = document.getElementById(targetId);
+        if (!container) return;
+        container.innerHTML = '';
+        if (!users.length) {
+            container.innerHTML = `<div class="secret-empty"><strong>Belum ada data</strong><p>${escapeHtml(emptyText)}</p></div>`;
+            return;
+        }
+        users.forEach(item => {
+            const card = document.createElement('article');
+            card.className = 'secret-log-item';
+            card.innerHTML = `
+                <div class="secret-log-meta">
+                    <span>${escapeHtml(item.auditor || 'Tanpa Nama')}</span>
+                    <span>${formatActivityTime(item.lastSeen || item.time)}</span>
+                </div>
+                <strong>${escapeHtml(item.detail || item.store || 'Aktivitas user')}</strong>
+                <p>${escapeHtml(item.store ? `Store: ${item.store}` : 'Aktivitas tersimpan di server.')}</p>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    async function renderSecretActivityPanel() {
+        const badge = document.getElementById('remoteUsageBadge');
+        const activeMeta = document.getElementById('activeUsersMeta');
+        const eventsMeta = document.getElementById('recentEventsMeta');
+        try {
+            const payload = await fetchRemoteUsageDashboard();
+            state.remoteUsageMode = true;
+            if (badge) badge.textContent = `Real time server • update ${formatActivityTime(payload.generatedAt)}`;
+            document.getElementById('activityTotalCount').textContent = Number(payload.summary?.eventsToday || 0);
+            document.getElementById('activityTodayCount').textContent = Number(payload.summary?.activeNow || 0);
+            document.getElementById('activityDownloadCount').textContent = Number(payload.summary?.uniqueUsersToday || 0);
+            document.getElementById('activityErrorCount').textContent = Number(payload.summary?.downloadsToday || 0);
+            if (activeMeta) activeMeta.textContent = `${Number(payload.summary?.activeNow || 0)} user sedang aktif pada 2 menit terakhir.`;
+            if (eventsMeta) eventsMeta.textContent = `${(payload.recentEvents || []).length} event terbaru dari seluruh user.`;
+            renderUserCards('activeUsersList', payload.activeUsers || [], 'Belum ada user aktif saat ini.');
+            const eventList = (payload.recentEvents || []).map(item => ({
+                auditor: item.auditor,
+                time: item.time,
+                detail: `${prettifyActivityType(item.eventType)} • ${item.detail || '-'}`,
+                store: item.store || '-'
+            }));
+            renderUserCards('secretLogList', eventList, 'Belum ada riwayat aktivitas di server.');
+            return;
+        } catch (error) {
+            console.error('Gagal memuat dashboard usage real time', error);
+            if (badge) badge.textContent = 'Fallback browser lokal';
+            const logs = readActivityLogs();
+            const summary = getActivitySummary(logs);
+            document.getElementById('activityTotalCount').textContent = summary.today;
+            document.getElementById('activityTodayCount').textContent = 1;
+            document.getElementById('activityDownloadCount').textContent = summary.total;
+            document.getElementById('activityErrorCount').textContent = summary.downloads;
+            if (activeMeta) activeMeta.textContent = 'Mode lokal. Dashboard server usage belum tersedia.';
+            if (eventsMeta) eventsMeta.textContent = 'Menampilkan log browser ini sebagai fallback.';
+            renderUserCards('activeUsersList', [{auditor: getTrackedUserName() || 'User lokal', lastSeen: new Date().toISOString(), detail: 'Browser aktif', store: getTrackedStoreName() || '-'}], 'Belum ada user lokal.');
+            const fallbackEvents = logs.map(item => ({
+                auditor: getTrackedUserName() || 'User lokal',
+                time: item.time,
+                detail: `${prettifyActivityType(item.type)} • ${item.detail || '-'}`,
+                store: getTrackedStoreName() || '-'
+            }));
+            renderUserCards('secretLogList', fallbackEvents, 'Interaksi utama web akan tampil di panel ini.');
+        }
+    }
+
     </script>
 </body>
 </html>
