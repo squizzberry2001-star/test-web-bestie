@@ -1317,3 +1317,267 @@ textarea::placeholder {
         height: 280px;
     }
 }
+
+
+/* === Patch v2: mobile polish, image containment, integration status === */
+.system-status-bar {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 0 18px;
+    padding: 12px 14px;
+    border: 1px solid rgba(188, 204, 220, 0.92);
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(245,250,252,0.98) 100%);
+}
+
+.system-status-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.system-status-copy strong {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--navy);
+}
+
+.system-status-copy span {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--muted);
+}
+
+.system-status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    flex: 0 0 12px;
+    margin-top: 4px;
+    background: #f59e0b;
+    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.14);
+}
+
+.system-status-dot.success {
+    background: #10b981;
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.14);
+}
+
+.system-status-dot.error {
+    background: #ef4444;
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.14);
+}
+
+.system-status-dot.pending {
+    background: #f59e0b;
+    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.14);
+}
+
+.meta-chips,
+.table-toolbar,
+.table-toolbar-right,
+.table-toolbar-left,
+.analytics-toolbar,
+.filters {
+    min-width: 0;
+}
+
+.photo-grid,
+.photo-row,
+.photo-cell,
+.photo-upload-box,
+.photo-preview,
+.qsc-photo-table,
+.qsc-photo-cell {
+    min-width: 0;
+}
+
+.photo-preview,
+.cover-preview {
+    overflow: hidden;
+}
+
+.photo-preview img,
+.cover-preview img,
+.qsc-photo-cell .photo-preview img,
+.photo-cell .photo-preview img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: center;
+}
+
+.photo-cell .photo-upload-box,
+.qsc-photo-cell .photo-upload-box {
+    overflow: hidden;
+}
+
+.dynamic-table textarea {
+    min-height: 100px;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.dynamic-table textarea::placeholder,
+.photo-description::placeholder,
+.qsc-description::placeholder {
+    line-height: 1.55;
+}
+
+.photo-description,
+.qsc-description {
+    min-height: 64px;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+    .header-content {
+        gap: 14px;
+    }
+
+    .meta-chips {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .table-toolbar-right {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .table-toolbar-right .btn {
+        flex: 1 1 220px;
+        justify-content: center;
+    }
+
+    .system-status-bar {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container,
+    .app-shell {
+        border-radius: 18px;
+    }
+
+    .page-switcher {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .page-btn {
+        width: 100%;
+    }
+
+    .section-header {
+        gap: 10px;
+    }
+
+    .section-title-wrap {
+        min-width: 0;
+    }
+
+    .section-title-wrap h2 {
+        font-size: 14px;
+        line-height: 1.45;
+        word-break: break-word;
+    }
+
+    .section-title-wrap p {
+        line-height: 1.6;
+    }
+
+    .toolbar-badge {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .dynamic-table td[data-label]::before {
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+
+    .dynamic-table textarea {
+        min-height: 108px;
+        padding-top: 12px;
+    }
+
+    .photo-cell .photo-upload-box {
+        height: 220px;
+    }
+
+    .qsc-photo-cell .photo-upload-box {
+        height: 240px;
+    }
+
+    .system-status-copy span {
+        font-size: 12.5px;
+    }
+}
+
+@media (max-width: 560px) {
+    .header,
+    .form-container,
+    .dashboard-content,
+    .section-content {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .header h1 {
+        font-size: 23px;
+        line-height: 1.2;
+    }
+
+    .chip {
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+    }
+
+    .btn,
+    .btn-ghost,
+    .btn-add {
+        min-height: 46px;
+    }
+
+    .dynamic-table tr {
+        padding: 14px 12px;
+    }
+
+    .dynamic-table textarea {
+        min-height: 120px;
+        font-size: 14px;
+    }
+
+    .photo-cell .photo-upload-box,
+    .qsc-photo-cell .photo-upload-box {
+        height: 220px;
+    }
+
+    .photo-description,
+    .qsc-description {
+        min-height: 72px;
+        font-size: 13px;
+    }
+
+    .analytics-card,
+    .card {
+        padding: 16px;
+    }
+}
