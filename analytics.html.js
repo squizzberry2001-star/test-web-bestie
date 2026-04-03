@@ -1,5 +1,5 @@
 
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyTBboXV703dXhNaZ6tPGMhj49c-TMipoy01cYciLDggHQD_pMguvwjI50FvDOe1sRF/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxlOv3bqiIlMrwGRZ3YfZihcDsST0Sa3hjzhBgB5klGIsHIErZRKuDlI75AzFMA-vyG/exec';
     const charts = {
         auditor: null,
         mix: null,
