@@ -1,6 +1,6 @@
 
     const APP = {
-        API_URL: 'https://script.google.com/macros/s/AKfycbw7V9zRV1DTVqHvfxjMWTcP6Mze-IkocGmOlykxrSO41ggkGyLedhEIsYt2dTFKkESU/exec',
+        API_URL: 'https://script.google.com/macros/s/AKfycbxlOv3bqiIlMrwGRZ3YfZihcDsST0Sa3hjzhBgB5klGIsHIErZRKuDlI75AzFMA-vyG/exec',
         DEFAULT_PHOTO_ROWS: 4,
         PHOTO_CELLS_PER_ROW: 4,
         MAX_TABLE_ROWS: 50,
