@@ -373,18 +373,28 @@
     <div class="toast" id="toast"></div>
 
     <script>
-    const APP = {
-        API_URL: 'https://script.google.com/macros/s/AKfycbwuS417cjVBgN2xnBXkhC-NHfvCdtW1TEXzIYV96f-LemRtsFU1H4AL-jmV0kzi0LBl/exec',
-        DEFAULT_PHOTO_ROWS: 4,
-        PHOTO_CELLS_PER_ROW: 4,
-        MAX_TABLE_ROWS: 50,
-        MAX_CREW: 10,
-        DB_NAME: 'regional_bestie_visit_report_db',
-        DB_VERSION: 2,
-        DB_STORE: 'kv',
-        DB_KEY: 'report-state',
-        BULLET_PREFIX: '• '
-    };
+  const API_URL = "https://script.google.com/macros/s/AKfycby2JRXU5BRZnsNKc1rpKYrsu1sk8PtCZCis7pzeCEqMqoTcFJQ_3-PG3xv49IUT_f3U/exec";
+
+async function uploadPDF(pdfBase64, auditor, toko) {
+  const body = new URLSearchParams();
+  body.append("auditor", auditor || "");
+  body.append("toko", toko || "");
+  body.append("pdf", pdfBase64 || "");
+
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body
+  });
+
+  const text = await res.text();
+  console.log("UPLOAD RESPONSE:", text);
+
+  if (!res.ok) {
+    throw new Error("Upload gagal: " + text);
+  }
+
+  return text;
+}
 
     const state = {
         autosaveTimer: null,
