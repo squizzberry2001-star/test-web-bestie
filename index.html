@@ -23,10 +23,8 @@
     <form id="reportForm" class="form-container">
 
 
-<div class="page-switcher">
-    <button class="page-btn active">REPORT</button>
-    <button class="page-btn" onclick="goToAnalytics()">REAL ANALYTICS</button>
-</div>
+<button type="button" class="page-btn active">REPORT</button>
+<button type="button" class="page-btn" onclick="goToAnalytics()">REAL ANALYTICS</button>
         
         <!-- 1. Title Header -->
             <div class="section">
@@ -1779,8 +1777,6 @@ toggleSection = function(sectionId) {
     _origToggleSection(sectionId);
     scheduleAutosave();
 };
-
-return ContentService.createTextOutput("OK");
         
 </script>
     
