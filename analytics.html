@@ -1,152 +1,391 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Real Analytics Dashboard</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-body{
-    font-family: Arial;
-    background:#f5f7fa;
-    margin:0;
-    padding:20px;
-}
-
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-}
-
-.page-btn{
-    padding:10px 16px;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.primary{background:#1b8f96;color:white;}
-.secondary{background:#e5e7eb;}
-
-.kpi-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:16px;
-    margin-bottom:20px;
-}
-
-.card{
-    background:white;
-    padding:16px;
-    border-radius:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,.05);
-}
-
-.kpi-title{font-size:12px;color:#666;}
-.kpi-value{font-size:28px;font-weight:bold;color:#1b8f96;}
-
-canvas{background:white;padding:10px;border-radius:12px;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regional Bestie - Real Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+<body class="analytics-body">
+    <div class="container dashboard-shell">
+        <header class="header">
+            <div class="header-content">
+                <span class="eyebrow">Audit Analytics</span>
+                <h1>Real Analytics Dashboard</h1>
+                <p>Dashboard ini membaca data langsung dari Google Apps Script + Spreadsheet, lalu menampilkan ringkasan report, aktivitas auditor, tren temuan, dan tautan PDF terbaru.</p>
+                <div class="meta-chips">
+                    <span class="chip">🔄 Sinkron ke spreadsheet</span>
+                    <span class="chip">📈 Chart auditor & temuan</span>
+                    <span class="chip">📎 Link PDF langsung</span>
+                </div>
+            </div>
+        </header>
 
-<body>
+        <div class="dashboard-content">
+            <nav class="page-switcher" aria-label="Navigasi halaman">
+                <a href="index.html" class="page-btn">REPORT</a>
+                <button type="button" class="page-btn active">REAL ANALYTICS</button>
+            </nav>
 
-<div class="header">
-    <h2>📊 Real Analytics Dashboard</h2>
-    <button class="page-btn secondary" onclick="goToReport()">← Back to Report</button>
-</div>
+            <div class="dashboard-toolbar">
+                <div class="sync-status" id="syncStatus">
+                    <span class="sync-dot"></span>
+                    <span id="syncStatusText">Menunggu sinkronisasi...</span>
+                </div>
+                <div class="table-toolbar-right">
+                    <button type="button" class="btn btn-primary" id="refreshAnalyticsBtn">↻ Refresh Data</button>
+                    <a href="index.html" class="btn btn-ghost">← Kembali ke Report</a>
+                </div>
+            </div>
 
-<div class="kpi-grid">
-    <div class="card">
-        <div class="kpi-title">Total Report</div>
-        <div class="kpi-value" id="totalReport">0</div>
+            <section class="kpi-grid">
+                <div class="kpi-card">
+                    <p class="kpi-label">Total Report</p>
+                    <div class="kpi-value" id="totalReports">0</div>
+                    <div class="kpi-meta" id="totalReportsMeta">Belum ada data</div>
+                </div>
+                <div class="kpi-card">
+                    <p class="kpi-label">Store Tercakup</p>
+                    <div class="kpi-value" id="uniqueStores">0</div>
+                    <div class="kpi-meta" id="uniqueStoresMeta">Store unik dari seluruh laporan</div>
+                </div>
+                <div class="kpi-card">
+                    <p class="kpi-label">Auditor Aktif</p>
+                    <div class="kpi-value" id="uniqueAuditors">0</div>
+                    <div class="kpi-meta" id="uniqueAuditorsMeta">Jumlah auditor yang sudah submit</div>
+                </div>
+                <div class="kpi-card">
+                    <p class="kpi-label">Total Temuan</p>
+                    <div class="kpi-value" id="totalFindings">0</div>
+                    <div class="kpi-meta" id="totalFindingsMeta">Gabungan OPI dan QSC</div>
+                </div>
+            </section>
+
+            <section class="chart-grid">
+                <div class="chart-card">
+                    <div class="card-heading">
+                        <div>
+                            <h3>Auditor Performance</h3>
+                            <p>Total laporan per auditor</p>
+                        </div>
+                    </div>
+                    <div class="chart-holder">
+                        <canvas id="auditorChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="card-heading">
+                        <div>
+                            <h3>Komposisi Temuan</h3>
+                            <p>Perbandingan OPI dan QSC</p>
+                        </div>
+                    </div>
+                    <div class="chart-holder">
+                        <canvas id="findingMixChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card full-span">
+                    <div class="card-heading">
+                        <div>
+                            <h3>Trend Temuan</h3>
+                            <p>Total temuan berdasarkan tanggal visit</p>
+                        </div>
+                    </div>
+                    <div class="chart-holder">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section class="analytics-card">
+                <div class="card-heading">
+                    <div>
+                        <h3>Recent Reports</h3>
+                        <p>Filter laporan audit berdasarkan nama store atau auditor.</p>
+                    </div>
+                    <div class="filters">
+                        <input type="search" class="analytics-search" id="searchInput" placeholder="Cari store / auditor...">
+                    </div>
+                </div>
+
+                <div class="table-container" id="tableWrapper">
+                    <table class="analytics-table">
+                        <thead>
+                            <tr>
+                                <th style="width:13%">Visit Date</th>
+                                <th style="width:18%">Auditor</th>
+                                <th style="width:18%">Store</th>
+                                <th style="width:10%">Crew</th>
+                                <th style="width:12%">OPI</th>
+                                <th style="width:12%">QSC</th>
+                                <th style="width:12%">Total</th>
+                                <th style="width:15%">File</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="empty-state hidden" id="emptyState">
+                    <h3>Belum ada data report</h3>
+                    <p>Pastikan Apps Script sudah di-deploy sebagai Web App dan data report berhasil masuk ke spreadsheet.</p>
+                </div>
+            </section>
+        </div>
     </div>
-    <div class="card">
-        <div class="kpi-title">Average Score</div>
-        <div class="kpi-value" id="avgScore">0</div>
-    </div>
-    <div class="card">
-        <div class="kpi-title">Low Performance</div>
-        <div class="kpi-value" id="lowScore">0</div>
-    </div>
-</div>
 
-<canvas id="chartBar"></canvas>
-<br><br>
-<canvas id="chartLine"></canvas>
+    <script>
+    const API_URL = localStorage.getItem('regionalBestieApiUrl') || 'https://script.google.com/macros/s/AKfycbybqCTpezmJ-C59oO9u7k3LDae2WZ4I8OnjmYNCXSEwWTn7IZI-gXW7_7QMW5aM9FZn/exec';
+    const charts = {
+        auditor: null,
+        mix: null,
+        trend: null
+    };
+    let allRows = [];
 
-<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('refreshAnalyticsBtn').addEventListener('click', loadAnalytics);
+        document.getElementById('searchInput').addEventListener('input', () => renderTable(filterRows(allRows)));
+        loadAnalytics();
+    });
 
-function goToReport(){
-    window.location.href = "index.html";
-}
-
-// 🔥 GANTI DENGAN URL GOOGLE SCRIPT KAMU
-const API_URL = "YOUR_GOOGLE_SCRIPT_URL";
-
-async function loadData(){
-
-    try{
-        const res = await fetch(API_URL);
-        const data = await res.json();
-
-        renderDashboard(data);
-
-    }catch(err){
-        console.error(err);
-        alert("Gagal load data");
+    function setSyncStatus(message, isError = false) {
+        const status = document.getElementById('syncStatus');
+        const text = document.getElementById('syncStatusText');
+        text.textContent = message;
+        status.classList.toggle('error', isError);
     }
-}
 
-function renderDashboard(data){
+    function parseNumber(value) {
+        const number = Number(value || 0);
+        return Number.isFinite(number) ? number : 0;
+    }
 
-    const total = data.length;
+    function formatDateLabel(value) {
+        if (!value) return '-';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return String(value);
+        return new Intl.DateTimeFormat('id-ID', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        }).format(date);
+    }
 
-    const avg = total > 0
-        ? (data.reduce((a,b)=>a + (b.score||0),0) / total).toFixed(1)
-        : 0;
+    function formatDateTimeLabel(value) {
+        if (!value) return '-';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return String(value);
+        return new Intl.DateTimeFormat('id-ID', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }).format(date);
+    }
 
-    const low = data.filter(d => (d.score||0) < 60).length;
+    async function loadAnalytics() {
+        setSyncStatus('Memuat data analytics dari spreadsheet...');
 
-    document.getElementById("totalReport").textContent = total;
-    document.getElementById("avgScore").textContent = avg;
-    document.getElementById("lowScore").textContent = low;
+        try {
+            const response = await fetch(`${API_URL}?action=analytics&ts=${Date.now()}`);
+            const payload = await response.json();
+            if (!payload || payload.status !== 'success') {
+                throw new Error(payload?.message || 'Response analytics tidak valid');
+            }
 
-    const labels = data.map(d=>d.toko);
-    const scores = data.map(d=>d.score||0);
-
-    new Chart(document.getElementById("chartBar"),{
-        type:'bar',
-        data:{
-            labels:labels,
-            datasets:[{
-                label:'Score per Store',
-                data:scores
-            }]
+            allRows = Array.isArray(payload.rows) ? payload.rows : [];
+            const filtered = filterRows(allRows);
+            renderSummary(allRows);
+            renderCharts(allRows);
+            renderTable(filtered);
+            renderEmptyState(allRows.length === 0);
+            setSyncStatus(`Tersinkron ${formatDateTimeLabel(payload.generatedAt)} • ${allRows.length} report`, false);
+        } catch (error) {
+            console.error(error);
+            allRows = [];
+            renderSummary([]);
+            renderCharts([]);
+            renderTable([]);
+            renderEmptyState(true);
+            setSyncStatus('Gagal sinkron. Periksa deployment Apps Script dan koneksi spreadsheet.', true);
         }
-    });
+    }
 
-    new Chart(document.getElementById("chartLine"),{
-        type:'line',
-        data:{
-            labels:data.map(d=>d.tanggal),
-            datasets:[{
-                label:'Trend Score',
-                data:scores
-            }]
-        }
-    });
-}
+    function filterRows(rows) {
+        const query = document.getElementById('searchInput').value.trim().toLowerCase();
+        if (!query) return sortRows(rows);
+        return sortRows(rows.filter(row => {
+            return `${row.store || ''} ${row.auditor || ''}`.toLowerCase().includes(query);
+        }));
+    }
 
-loadData();
+    function sortRows(rows) {
+        return [...rows].sort((a, b) => {
+            const dateA = new Date(a.visitDate || a.uploadedAt || 0).getTime();
+            const dateB = new Date(b.visitDate || b.uploadedAt || 0).getTime();
+            return dateB - dateA;
+        });
+    }
 
-</script>
+    function renderSummary(rows) {
+        const totalReports = rows.length;
+        const uniqueStores = new Set(rows.map(row => row.store).filter(Boolean)).size;
+        const uniqueAuditors = new Set(rows.map(row => row.auditor).filter(Boolean)).size;
+        const totalFindings = rows.reduce((total, row) => total + parseNumber(row.totalFindings), 0);
+        const averageFindings = totalReports ? (totalFindings / totalReports).toFixed(1) : '0.0';
 
+        document.getElementById('totalReports').textContent = totalReports;
+        document.getElementById('uniqueStores').textContent = uniqueStores;
+        document.getElementById('uniqueAuditors').textContent = uniqueAuditors;
+        document.getElementById('totalFindings').textContent = totalFindings;
+
+        document.getElementById('totalReportsMeta').textContent = totalReports ? `Rata-rata ${averageFindings} temuan per report` : 'Belum ada laporan';
+        document.getElementById('uniqueStoresMeta').textContent = uniqueStores ? `${uniqueStores} store unik pada data` : 'Store unik dari seluruh laporan';
+        document.getElementById('uniqueAuditorsMeta').textContent = uniqueAuditors ? `${uniqueAuditors} auditor aktif` : 'Jumlah auditor yang sudah submit';
+        document.getElementById('totalFindingsMeta').textContent = totalFindings ? `Rata-rata ${averageFindings} temuan per report` : 'Gabungan OPI dan QSC';
+    }
+
+    function destroyChart(instance) {
+        if (instance) instance.destroy();
+    }
+
+    function getAuditorChartData(rows) {
+        const map = new Map();
+        rows.forEach(row => {
+            const auditor = row.auditor || 'Tanpa Nama';
+            map.set(auditor, (map.get(auditor) || 0) + 1);
+        });
+        return [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
+    }
+
+    function getTrendData(rows) {
+        const map = new Map();
+        rows.forEach(row => {
+            const key = row.visitDate || row.uploadedAt || 'Tanpa Tanggal';
+            map.set(key, (map.get(key) || 0) + parseNumber(row.totalFindings));
+        });
+        return [...map.entries()].sort((a, b) => new Date(a[0]) - new Date(b[0]));
+    }
+
+    function renderCharts(rows) {
+        const auditorEntries = getAuditorChartData(rows);
+        const totalOPI = rows.reduce((sum, row) => sum + parseNumber(row.opiFindings), 0);
+        const totalQSC = rows.reduce((sum, row) => sum + parseNumber(row.qscFindings), 0);
+        const trendEntries = getTrendData(rows);
+
+        destroyChart(charts.auditor);
+        destroyChart(charts.mix);
+        destroyChart(charts.trend);
+
+        charts.auditor = new Chart(document.getElementById('auditorChart'), {
+            type: 'bar',
+            data: {
+                labels: auditorEntries.map(entry => entry[0]),
+                datasets: [{
+                    label: 'Jumlah Report',
+                    data: auditorEntries.map(entry => entry[1]),
+                    backgroundColor: 'rgba(15, 118, 110, 0.85)',
+                    borderRadius: 10,
+                    maxBarThickness: 42
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { precision: 0 } },
+                    x: { ticks: { maxRotation: 0, minRotation: 0 } }
+                }
+            }
+        });
+
+        charts.mix = new Chart(document.getElementById('findingMixChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['OPI Findings', 'QSC Findings'],
+                datasets: [{
+                    data: [totalOPI, totalQSC],
+                    backgroundColor: ['rgba(30, 58, 95, 0.88)', 'rgba(20, 184, 166, 0.88)'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                },
+                cutout: '62%'
+            }
+        });
+
+        charts.trend = new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: {
+                labels: trendEntries.map(entry => formatDateLabel(entry[0])),
+                datasets: [{
+                    label: 'Total Temuan',
+                    data: trendEntries.map(entry => entry[1]),
+                    borderColor: 'rgba(30, 58, 95, 1)',
+                    backgroundColor: 'rgba(30, 58, 95, 0.12)',
+                    tension: 0.28,
+                    fill: true,
+                    pointRadius: 3,
+                    pointHoverRadius: 5
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { precision: 0 } }
+                }
+            }
+        });
+    }
+
+    function renderTable(rows) {
+        const tbody = document.getElementById('reportsTableBody');
+        tbody.innerHTML = '';
+        rows.forEach(row => {
+            const tr = document.createElement('tr');
+            const pdfLink = row.pdfUrl
+                ? `<div class="table-actions"><span class="status-pill success">Ready</span><a class="link-btn" href="${row.pdfUrl}" target="_blank" rel="noopener noreferrer">Open PDF</a></div>`
+                : '<span class="status-pill neutral">No File</span>';
+            tr.innerHTML = `
+                <td>${formatDateLabel(row.visitDate || row.uploadedAt)}</td>
+                <td>${escapeHtml(row.auditor || '-')}</td>
+                <td>${escapeHtml(row.store || '-')}</td>
+                <td>${parseNumber(row.crewCount)}</td>
+                <td>${parseNumber(row.opiFindings)}</td>
+                <td>${parseNumber(row.qscFindings)}</td>
+                <td><strong>${parseNumber(row.totalFindings)}</strong></td>
+                <td>${pdfLink}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderEmptyState(isEmpty) {
+        document.getElementById('emptyState').classList.toggle('hidden', !isEmpty);
+        document.getElementById('tableWrapper').classList.toggle('hidden', isEmpty);
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+    </script>
 </body>
 </html>
