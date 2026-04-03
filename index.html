@@ -34,6 +34,14 @@
                 <a href="analytics.html" class="page-btn">REAL ANALYTICS</a>
             </nav>
 
+            <div class="system-status-bar" id="systemStatusBar">
+                <span class="system-status-dot pending" id="apiStatusDot"></span>
+                <div class="system-status-copy">
+                    <strong>Status Integrasi</strong>
+                    <span id="apiStatusText">Memeriksa koneksi Google Apps Script...</span>
+                </div>
+            </div>
+
             <form id="reportForm" novalidate>
                 <section class="section">
                     <div class="section-header">
@@ -174,7 +182,7 @@
                         </label>
                     </div>
                     <div class="section-content" id="qscResultSection">
-                        <p class="helper-text">Gunakan foto yang tajam. Deskripsi foto sudah dibuat multiline, jadi saat teks panjang akan otomatis turun ke baris berikutnya.</p>
+                        <p class="helper-text">Gunakan foto yang tajam. Deskripsi foto sekarang auto-grow dan akan turun otomatis ke baris berikutnya saat teks panjang, termasuk saat dibuka dari HP.</p>
                         <div class="qsc-photo-table">
                             <div class="qsc-photo-cell">
                                 <div class="photo-upload-box" data-trigger-file="qscResultPhoto">
@@ -366,7 +374,7 @@
 
     <script>
     const APP = {
-        API_URL: localStorage.getItem('regionalBestieApiUrl') || 'https://script.google.com/macros/s/AKfycbwq9fybY-b6Y9uC3gxifQUT7HpSu3rhWniPDplsRMd9GVlP1EoFRTc8rcdMCuFIpAVs/exec',
+        API_URL: 'https://script.google.com/macros/s/AKfycbybqCTpezmJ-C59oO9u7k3LDae2WZ4I8OnjmYNCXSEwWTn7IZI-gXW7_7QMW5aM9FZn/exec',
         DEFAULT_PHOTO_ROWS: 4,
         PHOTO_CELLS_PER_ROW: 4,
         MAX_TABLE_ROWS: 50,
@@ -377,8 +385,6 @@
         DB_KEY: 'report-state',
         BULLET_PREFIX: '• '
     };
-
-    localStorage.setItem('regionalBestieApiUrl', APP.API_URL);
 
     const state = {
         autosaveTimer: null,
@@ -394,6 +400,32 @@
         setDefaultVisitDate();
         bootstrapDynamicSections();
         hydrateFromLocalDB();
+        checkApiConnection();
+    }
+
+    function setApiConnectionStatus(message, tone = 'pending') {
+        const text = document.getElementById('apiStatusText');
+        const dot = document.getElementById('apiStatusDot');
+        if (text) text.textContent = message;
+        if (dot) dot.className = `system-status-dot ${tone}`;
+    }
+
+    async function checkApiConnection() {
+        setApiConnectionStatus('Memeriksa koneksi Google Apps Script...', 'pending');
+        try {
+            const response = await fetch(`${APP.API_URL}?action=health&ts=${Date.now()}`, {
+                method: 'GET',
+                cache: 'no-store'
+            });
+            const payload = await response.json();
+            if (!response.ok || payload.status !== 'success') {
+                throw new Error(payload.message || 'Health check gagal');
+            }
+            setApiConnectionStatus('Terhubung ke Google Apps Script, Drive, dan Spreadsheet.', 'success');
+        } catch (error) {
+            console.error('API health check gagal', error);
+            setApiConnectionStatus('Koneksi backend belum valid. Update dan deploy ulang Apps Script agar PDF bisa sinkron ke Drive dan Spreadsheet.', 'error');
+        }
     }
 
     function bindStaticEvents() {
@@ -1291,10 +1323,25 @@
     async function uploadPDF(payload) {
         const response = await fetch(APP.API_URL, {
             method: 'POST',
+            cache: 'no-store',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        return response.json();
+
+        const raw = await response.text();
+        let result = null;
+
+        try {
+            result = raw ? JSON.parse(raw) : {};
+        } catch (error) {
+            throw new Error(raw || 'Response backend bukan JSON yang valid.');
+        }
+
+        if (!response.ok || result.status !== 'success') {
+            throw new Error(result.message || `Upload gagal (HTTP ${response.status})`);
+        }
+
+        return result;
     }
 
     async function downloadPDF() {
@@ -1371,14 +1418,15 @@
 
             try {
                 const uploadResult = await uploadPDF(payload);
-                if (uploadResult && uploadResult.status === 'success') {
-                    showToast('PDF berhasil dibuat dan sinkron ke spreadsheet.', 'success');
-                } else {
-                    showToast('PDF berhasil dibuat, tetapi sinkron spreadsheet belum sukses.', 'warning');
-                }
+                const successMessage = uploadResult.fileUrl
+                    ? 'PDF berhasil dibuat, tersimpan ke Google Drive, dan metadata masuk ke Spreadsheet.'
+                    : 'PDF berhasil dibuat dan sinkronisasi backend selesai.';
+                showToast(successMessage, 'success');
+                setApiConnectionStatus('Sinkronisasi backend aktif dan berhasil menulis data terbaru.', 'success');
             } catch (uploadError) {
                 console.error('Upload gagal', uploadError);
-                showToast('PDF berhasil dibuat, tetapi upload ke spreadsheet gagal.', 'warning');
+                setApiConnectionStatus(`Upload backend gagal: ${uploadError.message}`, 'error');
+                showToast(`PDF berhasil dibuat, tetapi sinkron backend gagal: ${uploadError.message}`, 'warning');
             }
 
             updateLoading('Memulai download file PDF...', 100);
