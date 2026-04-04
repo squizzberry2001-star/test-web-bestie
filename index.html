@@ -13,7 +13,17 @@
     <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 
+    <!-- =========================================================
+         [RB-TAG-INDEX]
+         Cari cepat: RB-SECTION-REPORT-FORM, RB-SECTION-SECRET-PANEL,
+         RB-JS-INIT, RB-JS-PDF, RB-JS-AUTOSAVE, RB-JS-SECRET-PANEL, RB-JS-REALTIME-USAGE
+         ========================================================= -->
+
     <style>
+    /* =========================================================
+       [RB-CSS-STACKED-OBSERVATION]
+       Cari cepat: RB-CSS-STACKED-OBSERVATION
+       ========================================================= */
     .stacked-observation .table-toolbar {
         margin-bottom: 14px;
     }
@@ -108,34 +118,71 @@
     }
     </style>
 
-
     <style>
+    /* =========================================================
+       [RB-CSS-SECRET-PANEL]
+       Cari cepat:
+       - RB-CSS-SECRET-BUTTON
+       - RB-CSS-SECRET-AUTH
+       - RB-CSS-SECRET-DRAWER
+       ========================================================= */
+    :root {
+        --rb-secret-safe-top: max(14px, env(safe-area-inset-top));
+        --rb-secret-safe-right: max(14px, env(safe-area-inset-right));
+        --rb-secret-safe-bottom: max(14px, env(safe-area-inset-bottom));
+        --rb-secret-safe-left: max(14px, env(safe-area-inset-left));
+    }
+    body.secret-panel-open {
+        overflow: hidden;
+    }
+
+    /* === [RB-CSS-SECRET-BUTTON] === */
     .secret-access-btn {
         position: fixed;
-        right: 18px;
-        bottom: 18px;
-        width: 18px;
-        height: 18px;
+        right: var(--rb-secret-safe-right);
+        bottom: var(--rb-secret-safe-bottom);
+        width: 54px;
+        height: 54px;
+        min-width: 54px;
+        min-height: 54px;
         border-radius: 999px;
-        border: none;
-        background: rgba(15, 118, 110, 0.24);
-        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
-        opacity: 0.26;
-        z-index: 45;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: linear-gradient(135deg, rgba(16, 42, 67, 0.92), rgba(15, 118, 110, 0.92));
+        box-shadow: 0 16px 34px rgba(15, 23, 42, 0.24);
+        color: #ffffff;
+        opacity: 0.72;
+        z-index: 70;
         cursor: pointer;
-        transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .secret-access-btn::before {
+        content: '•••';
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: 0.16em;
+        transform: translateX(1px);
     }
     .secret-access-btn:hover,
     .secret-access-btn:focus-visible {
-        opacity: 0.86;
-        transform: scale(1.08);
-        background: rgba(15, 118, 110, 0.9);
+        opacity: 1;
+        transform: translateY(-1px) scale(1.04);
+        box-shadow: 0 20px 42px rgba(15, 23, 42, 0.28);
         outline: none;
     }
+    .secret-access-btn:focus-visible {
+        box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.22), 0 20px 42px rgba(15, 23, 42, 0.28);
+    }
+
+    /* === [RB-CSS-SECRET-AUTH] === */
     .secret-auth-modal,
     .secret-activity-drawer {
         position: fixed;
-        z-index: 60;
+        z-index: 80;
         pointer-events: none;
         opacity: 0;
         transition: opacity 0.22s ease, transform 0.22s ease;
@@ -147,15 +194,17 @@
     }
     .secret-auth-modal {
         inset: 0;
-        background: rgba(15, 23, 42, 0.48);
+        background: rgba(15, 23, 42, 0.52);
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 18px;
+        padding: calc(var(--rb-secret-safe-top) + 8px) max(18px, env(safe-area-inset-right)) calc(var(--rb-secret-safe-bottom) + 8px) max(18px, env(safe-area-inset-left));
         backdrop-filter: blur(6px);
     }
     .secret-auth-card {
         width: min(420px, 100%);
+        max-height: calc(100dvh - 36px);
+        overflow-y: auto;
         background: #ffffff;
         border-radius: 20px;
         padding: 24px;
@@ -196,22 +245,32 @@
         justify-content: flex-end;
         flex-wrap: wrap;
     }
+    .secret-auth-actions .btn {
+        min-width: 120px;
+    }
+
+    /* === [RB-CSS-SECRET-DRAWER] === */
     .secret-activity-drawer {
         top: 0;
         right: 0;
-        height: 100vh;
-        width: min(430px, 100vw);
+        height: 100dvh;
+        width: min(460px, calc(100vw - 18px));
+        max-width: 100vw;
         background: #f8fafc;
         box-shadow: -18px 0 40px rgba(15, 23, 42, 0.22);
-        transform: translateX(100%);
+        transform: translateX(110%);
         display: flex;
         flex-direction: column;
+        overflow: hidden;
+        border-top-left-radius: 24px;
+        border-bottom-left-radius: 24px;
     }
     .secret-activity-drawer.active { transform: translateX(0); }
     .secret-drawer-header {
-        padding: 20px 20px 14px;
+        padding: calc(var(--rb-secret-safe-top) + 6px) 20px 14px;
         background: linear-gradient(135deg, #102a43, #0f766e);
         color: #fff;
+        flex-shrink: 0;
     }
     .secret-drawer-header h3 {
         margin: 0;
@@ -223,6 +282,13 @@
         font-size: 13px;
         line-height: 1.45;
     }
+    .secret-drawer-content {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    }
     .secret-drawer-toolbar {
         display: flex;
         gap: 10px;
@@ -231,6 +297,16 @@
         padding: 14px 18px;
         border-bottom: 1px solid #e2e8f0;
         background: #fff;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        flex-wrap: wrap;
+    }
+    .secret-drawer-toolbar .table-toolbar-right {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-end;
         flex-wrap: wrap;
     }
     .secret-summary-grid {
@@ -256,13 +332,15 @@
         font-size: 22px;
         color: #102a43;
     }
+    .secret-drawer-content .card-heading {
+        margin-left: 18px !important;
+        margin-right: 18px !important;
+    }
     .secret-log-list {
         padding: 14px 18px 20px;
-        overflow: auto;
         display: flex;
         flex-direction: column;
         gap: 10px;
-        flex: 1;
     }
     .secret-log-item {
         background: #fff;
@@ -293,7 +371,7 @@
         line-height: 1.45;
     }
     .secret-empty {
-        margin: auto 18px;
+        margin: 0 18px 18px;
         padding: 26px 20px;
         text-align: center;
         border: 1px dashed #cbd5e1;
@@ -301,15 +379,62 @@
         color: #64748b;
         background: #fff;
     }
-    @media (max-width: 640px) {
-        .secret-access-btn { right: 12px; bottom: 12px; }
-        .secret-summary-grid { grid-template-columns: 1fr; }
-        .secret-activity-drawer { width: 100vw; }
+    @media (max-width: 768px) {
+        .secret-access-btn {
+            width: 50px;
+            height: 50px;
+        }
+        .secret-auth-card {
+            border-radius: 18px;
+            padding: 20px;
+        }
+        .secret-activity-drawer {
+            width: 100vw;
+            border-radius: 0;
+        }
+        .secret-summary-grid {
+            grid-template-columns: 1fr;
+        }
+        .secret-drawer-toolbar .table-toolbar-right,
+        .secret-auth-actions {
+            width: 100%;
+        }
+        .secret-drawer-toolbar .btn,
+        .secret-auth-actions .btn {
+            flex: 1 1 140px;
+            justify-content: center;
+        }
+    }
+    @media (max-width: 480px) {
+        .secret-access-btn {
+            right: 12px;
+            bottom: 12px;
+        }
+        .secret-drawer-header {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        .secret-drawer-toolbar {
+            padding: 12px 16px;
+        }
+        .secret-summary-grid,
+        .secret-log-list {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        .secret-drawer-content .card-heading {
+            margin-left: 16px !important;
+            margin-right: 16px !important;
+        }
     }
     </style>
 
 </head>
 <body>
+    <!-- =========================================================
+         [RB-HTML-INDEX]
+         Cari cepat: RB-SECTION-REPORT-FORM, RB-SECTION-LOADING, RB-SECTION-SECRET-PANEL
+         ========================================================= -->
     <div class="container app-shell">
         <header class="header">
             <div class="header-content">
@@ -324,6 +449,7 @@
             </div>
         </header>
 
+        <!-- === [RB-SECTION-REPORT-FORM] === -->
         <div class="form-container">
             <nav class="page-switcher" aria-label="Navigasi halaman">
                 <button type="button" class="page-btn active">REPORT</button>
@@ -655,6 +781,7 @@
         </div>
     </div>
 
+    <!-- === [RB-SECTION-LOADING] === -->
     <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
         <div class="loading-card">
             <div class="loading-spinner"></div>
@@ -668,12 +795,13 @@
 
     <div class="toast" id="toast"></div>
 
-    <button type="button" class="secret-access-btn" id="secretAccessBtn" aria-label="Buka panel aktivitas"></button>
+    <!-- === [RB-SECTION-SECRET-PANEL] === -->
+    <button type="button" class="secret-access-btn" id="secretAccessBtn" aria-label="Buka panel aktivitas" aria-haspopup="dialog" aria-controls="secretAuthModal secretActivityDrawer" aria-expanded="false"></button>
 
-    <div class="secret-auth-modal" id="secretAuthModal" aria-hidden="true">
-        <div class="secret-auth-card">
-            <h3>Panel Aktivitas</h3>
-            <p>Masukkan kode akses untuk melihat aktivitas penggunaan web ini.</p>
+    <div class="secret-auth-modal" id="secretAuthModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="secretAuthTitle" aria-describedby="secretAuthDesc">
+        <div class="secret-auth-card" tabindex="-1">
+            <h3 id="secretAuthTitle">Panel Aktivitas</h3>
+            <p id="secretAuthDesc">Masukkan kode akses untuk melihat aktivitas penggunaan web ini.</p>
             <input type="password" id="secretAuthInput" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="••••••">
             <div class="secret-auth-error" id="secretAuthError"></div>
             <div class="secret-auth-actions">
@@ -683,11 +811,12 @@
         </div>
     </div>
 
-    <aside class="secret-activity-drawer" id="secretActivityDrawer" aria-hidden="true">
+    <aside class="secret-activity-drawer" id="secretActivityDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="secretDrawerTitle">
         <div class="secret-drawer-header">
-            <h3>Aktivitas Penggunaan</h3>
+            <h3 id="secretDrawerTitle">Aktivitas Penggunaan</h3>
             <p>Panel ini menampilkan aktivitas semua user yang mengakses web berdasarkan nama secara real time.</p>
         </div>
+        <div class="secret-drawer-content">
         <div class="secret-drawer-toolbar">
             <span class="toolbar-badge" id="remoteUsageBadge">Kode akses aktif</span>
             <div class="table-toolbar-right">
@@ -715,10 +844,17 @@
             </div>
         </div>
         <div class="secret-log-list" id="secretLogList"></div>
+        </div>
     </aside>
 
 
+    <!-- === [RB-JS-INDEX] === -->
     <script>
+    // ==========================================================
+    // [RB-JS-TAG-LIST]
+    // Cari cepat: RB-JS-INIT, RB-JS-FORM-DYNAMIC, RB-JS-PDF,
+    // RB-JS-AUTOSAVE, RB-JS-SECRET-PANEL, RB-JS-REALTIME-USAGE
+    // ==========================================================
     const APP = {
         API_URL: 'https://script.google.com/macros/s/AKfycbxlOv3bqiIlMrwGRZ3YfZihcDsST0Sa3hjzhBgB5klGIsHIErZRKuDlI75AzFMA-vyG/exec',
         DEFAULT_FINDING_PHOTO_ROWS: 1,
@@ -741,7 +877,8 @@
         usageHeartbeatTimer: null,
         usageSessionId: null,
         lastPresenceName: '',
-        remoteUsageMode: false
+        remoteUsageMode: false,
+        secretLastFocus: null
     };
 
 
@@ -757,8 +894,10 @@
 
     document.addEventListener('DOMContentLoaded', initializeApp);
 
+    // === [RB-JS-INIT] boot aplikasi utama ===
     function initializeApp() {
         bindStaticEvents();
+        updateSecretPanelState();
         setDefaultVisitDate();
         bootstrapDynamicSections();
         hydrateFromLocalDB();
@@ -2070,9 +2209,31 @@
         window.location.reload();
     }
 
+    // === [RB-JS-SECRET-PANEL] helper panel rahasia responsif ===
+    function rememberSecretTrigger() {
+        state.secretLastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    }
+
+    function restoreSecretFocus() {
+        if (state.secretLastFocus && typeof state.secretLastFocus.focus === 'function') {
+            state.secretLastFocus.focus();
+        }
+        state.secretLastFocus = null;
+    }
+
+    function updateSecretPanelState() {
+        const isModalOpen = document.getElementById('secretAuthModal')?.classList.contains('active');
+        const isDrawerOpen = document.getElementById('secretActivityDrawer')?.classList.contains('active');
+        document.body.classList.toggle('secret-panel-open', Boolean(isModalOpen || isDrawerOpen));
+        const accessButton = document.getElementById('secretAccessBtn');
+        if (accessButton) {
+            accessButton.setAttribute('aria-expanded', isDrawerOpen ? 'true' : 'false');
+        }
+    }
+
     function bindSecretActivityEvents() {
         document.getElementById('secretAccessBtn')?.addEventListener('click', openSecretPanel);
-        document.getElementById('secretAuthCancelBtn')?.addEventListener('click', closeSecretAuthModal);
+        document.getElementById('secretAuthCancelBtn')?.addEventListener('click', () => closeSecretAuthModal());
         document.getElementById('secretAuthSubmitBtn')?.addEventListener('click', submitSecretAuth);
         document.getElementById('closeSecretDrawerBtn')?.addEventListener('click', closeSecretActivityDrawer);
         document.getElementById('refreshActivityLogBtn')?.addEventListener('click', renderSecretActivityPanel);
@@ -2089,6 +2250,7 @@
                 closeSecretActivityDrawer();
             }
         });
+        window.addEventListener('resize', updateSecretPanelState);
     }
 
     function getUsageSessionId() {
@@ -2234,6 +2396,7 @@
     }
 
     function openSecretPanel() {
+        rememberSecretTrigger();
         const isAuthed = sessionStorage.getItem(SECRET_ACTIVITY.SESSION_KEY) === '1';
         if (isAuthed) {
             openSecretActivityDrawer();
@@ -2242,6 +2405,7 @@
         document.getElementById('secretAuthModal')?.classList.add('active');
         document.getElementById('secretAuthModal')?.setAttribute('aria-hidden', 'false');
         document.getElementById('secretAuthError').textContent = '';
+        updateSecretPanelState();
         const input = document.getElementById('secretAuthInput');
         if (input) {
             input.value = '';
@@ -2249,9 +2413,14 @@
         }
     }
 
-    function closeSecretAuthModal() {
+    function closeSecretAuthModal(options = {}) {
+        const { restoreFocus = true } = options;
         document.getElementById('secretAuthModal')?.classList.remove('active');
         document.getElementById('secretAuthModal')?.setAttribute('aria-hidden', 'true');
+        updateSecretPanelState();
+        if (restoreFocus && !document.getElementById('secretActivityDrawer')?.classList.contains('active')) {
+            restoreSecretFocus();
+        }
     }
 
     function submitSecretAuth() {
@@ -2260,7 +2429,7 @@
         const code = String(input?.value || '').trim();
         if (code === SECRET_ACTIVITY.AUTH_CODE) {
             sessionStorage.setItem(SECRET_ACTIVITY.SESSION_KEY, '1');
-            closeSecretAuthModal();
+            closeSecretAuthModal({ restoreFocus: false });
             openSecretActivityDrawer();
             logActivity('secret_access', 'Panel aktivitas dibuka dengan kode akses yang valid.');
             return;
@@ -2272,12 +2441,16 @@
     function openSecretActivityDrawer() {
         document.getElementById('secretActivityDrawer')?.classList.add('active');
         document.getElementById('secretActivityDrawer')?.setAttribute('aria-hidden', 'false');
+        updateSecretPanelState();
         renderSecretActivityPanel();
+        setTimeout(() => document.getElementById('closeSecretDrawerBtn')?.focus(), 30);
     }
 
     function closeSecretActivityDrawer() {
         document.getElementById('secretActivityDrawer')?.classList.remove('active');
         document.getElementById('secretActivityDrawer')?.setAttribute('aria-hidden', 'true');
+        updateSecretPanelState();
+        restoreSecretFocus();
     }
 
     function getActivitySummary(logs) {
