@@ -8,7 +8,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- =========================================================
+       [RB-TAG-ANALYTICS]
+       Cari cepat: RB-SECTION-HERO, RB-SECTION-KPI, RB-SECTION-RANKING,
+       RB-HELPERS, RB-STORE-NORMALIZE, RB-SUMMARY, RB-CHARTS, RB-RANKING, RB-TABLE
+       ========================================================= -->
   <style>
+    /* =========================================================
+       [RB-CSS-ANALYTICS]
+       Cari cepat: RB-CSS-LAYOUT, RB-CSS-RANKING-SCROLL, RB-CSS-TABLE
+       ========================================================= */
     :root {
       --bg: #eff4f8;
       --card: #ffffff;
@@ -190,7 +199,19 @@
     .card-head h3 { margin: 0 0 5px; font-size: 18px; }
     .card-head p { margin: 0; color: var(--muted); font-size: 13px; }
     .chart-wrap { height: 320px; }
-    .rank-list { display: grid; gap: 12px; }
+    /* === [RB-CSS-RANKING-SCROLL] === */
+    .rank-list {
+      display: grid;
+      gap: 12px;
+      max-height: 430px;
+      overflow-y: auto;
+      padding-right: 6px;
+      align-content: start;
+      scroll-behavior: smooth;
+    }
+    .rank-list::-webkit-scrollbar { width: 10px; }
+    .rank-list::-webkit-scrollbar-thumb { background: #bfd0de; border-radius: 999px; }
+    .rank-list::-webkit-scrollbar-track { background: #eef4f8; border-radius: 999px; }
     .rank-item {
       border: 1px solid var(--line);
       border-radius: 16px;
@@ -281,12 +302,14 @@
       .controls-grid, .chart-grid { grid-template-columns: 1fr; }
       .kpi-grid { grid-template-columns: 1fr 1fr; }
       .chart-wrap { height: 260px; }
+      .rank-list { max-height: 360px; }
     }
   </style>
 </head>
 <body>
   <div class="shell">
     <div class="container">
+      <!-- === [RB-SECTION-HERO] === -->
       <section class="hero">
         <span class="eyebrow">Audit Analytics Pro</span>
         <h1>Regional Bestie Real Analytics Dashboard</h1>
@@ -299,6 +322,7 @@
         </div>
       </section>
 
+      <!-- === [RB-SECTION-TOOLBAR] === -->
       <section class="toolbar">
         <div class="status">
           <span class="dot pending" id="syncDot"></span>
@@ -313,6 +337,7 @@
         </div>
       </section>
 
+      <!-- === [RB-SECTION-FILTERS] === -->
       <section class="controls-grid">
         <div class="panel">
           <label for="searchInput">Cari Store / Auditor</label>
@@ -334,6 +359,7 @@
         </div>
       </section>
 
+      <!-- === [RB-SECTION-KPI] === -->
       <section class="kpi-grid">
         <div class="card"><p class="kpi-label">Total Report</p><div class="kpi-value" id="kpiReports">0</div><div class="kpi-meta" id="kpiReportsMeta">Belum ada data</div></div>
         <div class="card"><p class="kpi-label">Store Tercakup</p><div class="kpi-value" id="kpiStores">0</div><div class="kpi-meta">Jumlah store unik</div></div>
@@ -343,6 +369,7 @@
         <div class="card"><p class="kpi-label">Latest Sync</p><div class="kpi-value" id="kpiLatest">-</div><div class="kpi-meta">Waktu data terakhir dibaca</div></div>
       </section>
 
+      <!-- === [RB-SECTION-CHARTS] === -->
       <section class="chart-grid">
         <div class="chart-card">
           <div class="card-head"><div><h3>Top Auditor by Report</h3><p>Jumlah report terbanyak per auditor</p></div></div>
@@ -358,18 +385,20 @@
         </div>
       </section>
 
+      <!-- === [RB-SECTION-RANKING-AND-COVERAGE] === -->
       <section class="layout">
         <div class="chart-card">
-          <div class="card-head"><div><h3>Store Coverage</h3><p>Store dengan report terbanyak</p></div></div>
+          <div class="card-head"><div><h3>Store Coverage</h3><p>Nama store disatukan walau beda kapital.</p></div></div>
           <div class="chart-wrap"><canvas id="storeChart"></canvas></div>
         </div>
         <div class="chart-card">
           <div class="card-head"><div><h3>Auditor Ranking</h3><p>Gabungan jumlah report dan total temuan</p></div></div>
           <div class="rank-list" id="rankList"></div>
-          <div class="footer-note">Ranking dihitung dari jumlah report, lalu total temuan sebagai pembeda.</div>
+          <div class="footer-note">Ranking dihitung dari jumlah report, lalu total temuan sebagai pembeda. Scroll ke bawah untuk melihat semua auditor.</div>
         </div>
       </section>
 
+      <!-- === [RB-SECTION-RECENT-REPORTS] === -->
       <section class="table-card">
         <div class="table-tools">
           <div>
@@ -404,10 +433,17 @@
     </div>
   </div>
 
+  <!-- === [RB-JS-ANALYTICS] === -->
   <script>
+    // ==========================================================
+    // [RB-JS-TAG-LIST]
+    // Cari cepat: RB-BOOT, RB-HELPERS, RB-STORE-NORMALIZE, RB-FILTERS,
+    // RB-SUMMARY, RB-CHARTS, RB-RANKING, RB-TABLE
+    // ==========================================================
     const API_URL = 'https://script.google.com/macros/s/AKfycbxlOv3bqiIlMrwGRZ3YfZihcDsST0Sa3hjzhBgB5klGIsHIErZRKuDlI75AzFMA-vyG/exec';
     const charts = { auditor: null, mix: null, trend: null, store: null };
     let allRows = [];
+    let lastGeneratedAt = '';
 
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('refreshBtn').addEventListener('click', loadAnalytics);
@@ -456,6 +492,29 @@
         .replace(/'/g, '&#39;');
     }
 
+    // === [RB-STORE-NORMALIZE] menghitung store case-insensitive ===
+    function normalizeStoreKey(value) {
+      return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    }
+
+    function normalizeStoreLabel(value) {
+      return String(value || '').replace(/\s+/g, ' ').trim() || 'Tanpa Store';
+    }
+
+    function buildStoreCoverageMap(rows) {
+      const storeMap = new Map();
+      rows.forEach(row => {
+        const label = normalizeStoreLabel(row.store);
+        const key = normalizeStoreKey(label) || 'tanpa store';
+        if (!storeMap.has(key)) {
+          storeMap.set(key, { label, count: 0 });
+        }
+        storeMap.get(key).count += 1;
+      });
+      return storeMap;
+    }
+
+    // === [RB-BOOT] load data analytics dari Apps Script ===
     async function loadAnalytics() {
       setSync('Memuat data analytics dari spreadsheet...', 'pending');
       try {
@@ -465,13 +524,15 @@
           throw new Error(payload?.message || 'Response analytics tidak valid');
         }
         allRows = Array.isArray(payload.rows) ? payload.rows : [];
+        lastGeneratedAt = payload.generatedAt || '';
         hydrateAuditorFilter(allRows);
         applyFilters();
-        document.getElementById('kpiLatest').textContent = payload.generatedAt ? formatDate(payload.generatedAt) : '-';
+        document.getElementById('kpiLatest').textContent = lastGeneratedAt ? formatDateTime(lastGeneratedAt) : '-';
         setSync(`Sinkron berhasil • ${allRows.length} report terbaca`, 'success');
       } catch (error) {
         console.error(error);
         allRows = [];
+        lastGeneratedAt = '';
         hydrateAuditorFilter([]);
         renderDashboard([]);
         setSync('Gagal sinkron. Cek endpoint Apps Script action=analytics.', 'error');
@@ -519,9 +580,10 @@
       document.getElementById('tableScroll').style.display = rows.length ? 'block' : 'none';
     }
 
+    // === [RB-SUMMARY] KPI dashboard ===
     function renderSummary(rows) {
       const totalReports = rows.length;
-      const uniqueStores = new Set(rows.map(r => r.store).filter(Boolean)).size;
+      const uniqueStores = buildStoreCoverageMap(rows).size;
       const uniqueAuditors = new Set(rows.map(r => r.auditor).filter(Boolean)).size;
       const totalFindings = rows.reduce((sum, row) => sum + toNumber(row.totalFindings), 0);
       const avgFindings = totalReports ? (totalFindings / totalReports).toFixed(1) : '0.0';
@@ -532,7 +594,9 @@
       document.getElementById('kpiAuditors').textContent = uniqueAuditors;
       document.getElementById('kpiFindings').textContent = totalFindings;
       document.getElementById('kpiAvg').textContent = avgFindings;
-      document.getElementById('kpiLatest').textContent = latestRow ? formatDate(latestRow.visitDate || latestRow.uploadedAt) : '-';
+      document.getElementById('kpiLatest').textContent = lastGeneratedAt
+        ? formatDateTime(lastGeneratedAt)
+        : (latestRow ? formatDate(latestRow.visitDate || latestRow.uploadedAt) : '-');
       document.getElementById('kpiReportsMeta').textContent = totalReports ? `Rata-rata ${avgFindings} temuan per report` : 'Belum ada report';
       document.getElementById('kpiFindingsMeta').textContent = totalFindings ? `OPI ${rows.reduce((s,r)=>s+toNumber(r.opiFindings),0)} • QSC ${rows.reduce((s,r)=>s+toNumber(r.qscFindings),0)}` : 'Gabungan OPI + QSC';
       document.getElementById('tableCountPill').textContent = `${totalReports} data`;
@@ -541,18 +605,17 @@
 
     function destroyChart(chart) { if (chart) chart.destroy(); }
 
+    // === [RB-CHARTS] chart analytics utama ===
     function renderCharts(rows) {
       const auditorMap = new Map();
-      const storeMap = new Map();
+      const storeMap = buildStoreCoverageMap(rows);
       const trendMap = new Map();
       let totalOPI = 0;
       let totalQSC = 0;
 
       rows.forEach(row => {
         const auditor = row.auditor || 'Tanpa Nama';
-        const store = row.store || 'Tanpa Store';
         auditorMap.set(auditor, (auditorMap.get(auditor) || 0) + 1);
-        storeMap.set(store, (storeMap.get(store) || 0) + 1);
         totalOPI += toNumber(row.opiFindings);
         totalQSC += toNumber(row.qscFindings);
         const key = row.visitDate || row.uploadedAt || 'Tanpa Tanggal';
@@ -560,7 +623,10 @@
       });
 
       const auditorEntries = [...auditorMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,8);
-      const storeEntries = [...storeMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,8);
+      const storeEntries = [...storeMap.values()]
+        .sort((a,b)=>b.count-a.count)
+        .slice(0,8)
+        .map(item => [item.label, item.count]);
       const trendEntries = [...trendMap.entries()].sort((a,b)=> (safeDate(a[0])?.getTime() || 0) - (safeDate(b[0])?.getTime() || 0));
 
       destroyChart(charts.auditor);
@@ -602,6 +668,7 @@
       });
     }
 
+    // === [RB-RANKING] ranking auditor full list + scroll ===
     function renderRanking(rows) {
       const rankList = document.getElementById('rankList');
       const map = new Map();
@@ -615,8 +682,9 @@
 
       const ranking = [...map.entries()]
         .map(([name, stats]) => ({ name, ...stats }))
-        .sort((a,b) => (b.reports - a.reports) || (b.findings - a.findings))
-        .slice(0, 5);
+        .sort((a,b) => (b.reports - a.reports) || (b.findings - a.findings) || a.name.localeCompare(b.name));
+
+      rankList.scrollTop = 0;
 
       if (!ranking.length) {
         rankList.innerHTML = '<div class="footer-note">Belum ada data auditor.</div>';
