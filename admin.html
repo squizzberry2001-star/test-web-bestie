@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regional Bestie Admin Console</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin-upgrade.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page-body">
+  <div class="container app-shell admin-shell">
+    <header class="header admin-hero-shell">
+      <div class="header-content">
+        <span class="eyebrow">Regional Bestie • Admin Console</span>
+        <h1>Dashboard Admin Pro</h1>
+        <p>Satu ruang admin untuk mengelola master store berkode, master auditor + NIK, job level, link OPI, link assignment, upload master via Excel, dan fitur-fitur report web secara terpusat.</p>
+        <div class="meta-chips">
+          <span class="chip">⚙️ Feature control</span>
+          <span class="chip">🏬 Store code + name</span>
+          <span class="chip">👤 Auditor + NIK</span>
+          <span class="chip">📤 Import Excel master</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="form-container admin-console-wrap">
+      <nav class="page-switcher" aria-label="Navigasi halaman" id="adminPageSwitcher"></nav>
+
+      <section class="section admin-auth-gate" id="adminLockGate">
+        <div class="section-header">
+          <div class="icon">🔐</div>
+          <div class="section-title-wrap">
+            <h2>Verifikasi Admin</h2>
+            <p>Masukkan kode admin untuk membuka dashboard pengaturan dan publish perubahan ke web.</p>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="admin-auth-row">
+            <input type="password" id="adminCodeInput" class="auditor-autocomplete-input" inputmode="numeric" autocomplete="off" placeholder="Masukkan kode admin">
+            <button type="button" class="btn btn-primary" id="adminUnlockBtn">Buka Console</button>
+          </div>
+          <div class="secret-auth-error" id="adminCodeError"></div>
+          <p class="section-helper-note">Kode admin mengikuti pengaturan Apps Script. Bila backend belum diredeploy, fallback browser memakai kode default.</p>
+        </div>
+      </section>
+
+      <div id="adminConsoleApp" hidden>
+        <section class="section">
+          <div class="section-header">
+            <div class="icon">1</div>
+            <div class="section-title-wrap">
+              <h2>Ringkasan Admin</h2>
+              <p>Lihat jumlah master data aktif, source config yang dipakai, dan status sinkronisasi terakhir.</p>
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="admin-actions-top">
+              <div class="admin-console-headline">
+                <span class="admin-pill" id="adminSourceChip">Source: Default</span>
+                <span class="admin-pill warn" id="adminDirtyBadge">Belum dipublish</span>
+              </div>
+              <div class="admin-action-buttons">
+                <button type="button" class="btn btn-ghost" id="adminRefreshActivityBtn">Refresh Activity</button>
+                <button type="button" class="btn btn-secondary" id="adminLogoutBtn">Logout Admin</button>
+              </div>
+            </div>
+            <div class="admin-summary-grid" id="adminSummaryGrid"></div>
+            <p class="section-helper-note" id="adminSaveStatus">Terakhir update: -</p>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header">
+            <div class="icon">2</div>
+            <div class="section-title-wrap">
+              <h2>Feature Control Center</h2>
+              <p>Nyalakan atau matikan section tertentu pada web report sesuai kebutuhan operasional.</p>
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="admin-feature-grid" id="adminFeatureGrid"></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header">
+            <div class="icon">3</div>
+            <div class="section-title-wrap">
+              <h2>Master Data Manager</h2>
+              <p>Tambahkan store, auditor + NIK, job level, atau import full master via Excel langsung dari console admin.</p>
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="admin-master-grid">
+              <article class="admin-manage-card">
+                <div class="admin-card-head">
+                  <div>
+                    <h3>Store Master</h3>
+                    <p>Dropdown store akan tampil sebagai kode toko + nama store.</p>
+                  </div>
+                  <span class="admin-pill" id="adminStoreCount">0 store</span>
+                </div>
+                <div class="admin-inline-form admin-inline-form-wide">
+                  <input type="text" id="addStoreCodeInput" class="auditor-autocomplete-input" placeholder="Kode store, contoh 001">
+                  <input type="text" id="addStoreInput" class="auditor-autocomplete-input" placeholder="Nama store">
+                  <input type="text" id="addStoreTypeInput" class="auditor-autocomplete-input" placeholder="Type (opsional)">
+                  <input type="text" id="addStoreCityInput" class="auditor-autocomplete-input" placeholder="Kota (opsional)">
+                  <button type="button" class="btn btn-primary" id="addStoreBtn">Add Store</button>
+                </div>
+                <div class="admin-upload-box">
+                  <label for="storeMasterUploadInput">Import Master Store via Excel</label>
+                  <input type="file" id="storeMasterUploadInput" accept=".xlsx,.xls,.csv">
+                  <div class="admin-upload-actions">
+                    <button type="button" class="btn btn-ghost" id="storeMasterUploadBtn">Import Store Master</button>
+                  </div>
+                  <p class="section-helper-note">Format store mengikuti file PIC yang Anda upload: gunakan kolom <strong>Site</strong> dan <strong>SiteDescr</strong>. Saat import, master store akan diganti mengikuti file Excel.</p>
+                </div>
+                <input type="search" id="adminStoreSearch" class="auditor-search-input" placeholder="Cari store...">
+                <div class="admin-list" id="adminStoreList"></div>
+              </article>
+
+              <article class="admin-manage-card">
+                <div class="admin-card-head">
+                  <div>
+                    <h3>Auditor Master</h3>
+                    <p>Nama auditor tampil di dropdown interaktif. NIK disimpan untuk hasil sheet report.</p>
+                  </div>
+                  <span class="admin-pill" id="adminAuditorCount">0 auditor</span>
+                </div>
+                <div class="admin-inline-form admin-inline-form-dual">
+                  <input type="text" id="addAuditorInput" class="auditor-autocomplete-input" placeholder="Tambah nama auditor">
+                  <input type="text" id="addAuditorNikInput" class="auditor-autocomplete-input" placeholder="NIK auditor">
+                  <button type="button" class="btn btn-primary" id="addAuditorBtn">Add Auditor</button>
+                </div>
+                <div class="admin-upload-box">
+                  <label for="auditorMasterUploadInput">Import Master Auditor via Excel</label>
+                  <input type="file" id="auditorMasterUploadInput" accept=".xlsx,.xls,.csv">
+                  <div class="admin-upload-actions">
+                    <button type="button" class="btn btn-ghost" id="auditorMasterUploadBtn">Import Auditor Master</button>
+                  </div>
+                  <p class="section-helper-note">Format auditor yang direkomendasikan: kolom <strong>NIK</strong> dan <strong>Nama Auditor</strong>. Saat import, master auditor akan diganti mengikuti file Excel.</p>
+                </div>
+                <input type="search" id="adminAuditorSearch" class="auditor-search-input" placeholder="Cari auditor / NIK...">
+                <div class="admin-list" id="adminAuditorList"></div>
+              </article>
+
+              <article class="admin-manage-card">
+                <div class="admin-card-head">
+                  <div>
+                    <h3>Level Master</h3>
+                    <p>Job level untuk Store Leader, Shift Leader, dan Crew Store.</p>
+                  </div>
+                  <span class="admin-pill" id="adminLevelCount">0 level</span>
+                </div>
+                <div class="admin-inline-form">
+                  <input type="text" id="addLevelInput" class="auditor-autocomplete-input" placeholder="Tambah level baru">
+                  <button type="button" class="btn btn-primary" id="addLevelBtn">Add Level</button>
+                </div>
+                <div class="admin-upload-box">
+                  <label for="levelMasterUploadInput">Import Master Level via Excel</label>
+                  <input type="file" id="levelMasterUploadInput" accept=".xlsx,.xls,.csv">
+                  <div class="admin-upload-actions">
+                    <button type="button" class="btn btn-ghost" id="levelMasterUploadBtn">Import Level Master</button>
+                  </div>
+                  <p class="section-helper-note">Format level cukup satu kolom berisi nama level, misalnya <strong>Level</strong> atau <strong>Job Level</strong>.</p>
+                </div>
+                <input type="search" id="adminLevelSearch" class="auditor-search-input" placeholder="Cari level...">
+                <div class="admin-list" id="adminLevelList"></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header">
+            <div class="icon">4</div>
+            <div class="section-title-wrap">
+              <h2>Link Settings</h2>
+              <p>Ganti link OPI dan assignment secara terpusat dari ruang admin.</p>
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="adminOpiLink">Link OPI</label>
+                <input type="url" id="adminOpiLink" placeholder="https://example.com/opi-link">
+              </div>
+              <div class="form-group">
+                <label for="adminAssignmentLink">Link Assignment</label>
+                <input type="url" id="adminAssignmentLink" placeholder="https://example.com/assignment-link">
+              </div>
+            </div>
+            <p class="section-helper-note">Setelah dipublish, link ini akan dipakai otomatis oleh report form yang dibuka ulang atau direfresh user.</p>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header">
+            <div class="icon">5</div>
+            <div class="section-title-wrap">
+              <h2>Live Activity Snapshot</h2>
+              <p>Monitoring cepat user aktif dan event terbaru dari web report.</p>
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="admin-activity-grid" id="adminActivityGrid">
+              <div class="admin-empty-state">Buka console dengan kode admin untuk memuat activity dashboard.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="admin-actions-footer">
+              <div>
+                <h3>Publish perubahan ke web</h3>
+                <p class="section-helper-note">Perubahan selalu disimpan ke browser dulu. Klik Publish agar semua device/user membaca config yang sama dari server.</p>
+              </div>
+              <div class="admin-action-buttons">
+                <button type="button" class="btn btn-ghost" id="adminResetBtn">Reset Default</button>
+                <button type="button" class="btn btn-primary" id="adminPublishBtn">Publish ke Web</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="adminToast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="app-config.js"></script>
+  <script src="master-defaults.js"></script>
+  <script src="admin-shared.js"></script>
+  <script src="admin-app.js"></script>
+</body>
+</html>
