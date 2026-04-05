@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regional Bestie Setup Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eff4f8;
+      --card: #ffffff;
+      --navy: #1e3a5f;
+      --teal: #0f766e;
+      --line: #d7e2ec;
+      --text: #18324b;
+      --muted: #66788a;
+      --shadow: 0 18px 40px rgba(20, 37, 63, 0.10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f5f8fb 0%, #edf3f7 100%);
+    }
+    .shell {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .hero, .card {
+      background: var(--card);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+    .hero {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f766e 100%);
+      color: #fff;
+      padding: 28px 30px;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-family: 'Poppins', sans-serif;
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.1;
+    }
+    .hero p {
+      margin: 0;
+      max-width: 780px;
+      line-height: 1.65;
+      color: rgba(255,255,255,.92);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .card {
+      padding: 22px;
+    }
+    h2 {
+      margin: 0 0 12px;
+      color: var(--navy);
+      font-size: 22px;
+      font-family: 'Poppins', sans-serif;
+    }
+    ol, ul {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.75;
+      color: var(--text);
+    }
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      overflow: auto;
+      margin: 12px 0 0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.18);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      margin-right: 8px;
+      margin-top: 12px;
+    }
+    a.btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 18px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      background: var(--teal);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <h1>Panduan Setup & Deploy</h1>
+      <p>Halaman ini sekarang dipakai sebagai panduan teknis setelah upgrade. Fitur export PPT sudah dibuat langsung dari halaman report, jadi kamu tidak perlu lagi mengunggah PDF ke layanan pihak ketiga untuk membuat slide presentasi.</p>
+      <div>
+        <span class="pill">✅ Export PPT lokal</span>
+        <span class="pill">✅ Config terpusat</span>
+        <span class="pill">✅ Backend upload lebih aman</span>
+      </div>
+      <a class="btn" href="index.html">← Kembali ke Report</a>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Yang berubah</h2>
+        <ul>
+          <li>Export PPT sekarang langsung dibuat dari browser lewat tombol <strong>Download PPT</strong>.</li>
+          <li>Config frontend dipusatkan di file <code>app-config.js</code>.</li>
+          <li>Autosave dipisah antara data form dan data media agar input terasa lebih ringan.</li>
+          <li>Apps Script backend sudah mendukung upload report, analytics, tracking usage, dan dashboard usage.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Script Properties Apps Script</h2>
+        <ol>
+          <li>Buka project Apps Script.</li>
+          <li>Masuk ke <strong>Project Settings → Script Properties</strong>.</li>
+          <li>Tambahkan properti berikut:
+            <ul>
+              <li><code>ROOT_FOLDER_ID</code></li>
+              <li><code>SPREADSHEET_ID</code></li>
+              <li><code>SHEET_NAME</code> (opsional, default <code>Sheet1</code>)</li>
+              <li><code>TIMEZONE</code> (opsional, default <code>GMT+7</code>)</li>
+              <li><code>USAGE_DASHBOARD_CODE</code> untuk membuka panel activity</li>
+            </ul>
+          </li>
+        </ol>
+      </article>
+
+      <article class="card">
+        <h2>File yang perlu kamu update</h2>
+        <ol>
+          <li>Deploy file <code>apps_script_check.js</code> ke Apps Script.</li>
+          <li>Update URL Web App di <code>app-config.js</code> bila endpoint berubah.</li>
+          <li>Upload folder web statis ini ke hosting kamu seperti Vercel / Netlify.</li>
+        </ol>
+      </article>
+
+      <article class="card">
+        <h2>Contoh properti</h2>
+        <pre>ROOT_FOLDER_ID=folder_google_drive_kamu
+SPREADSHEET_ID=spreadsheet_google_sheet_kamu
+SHEET_NAME=Sheet1
+TIMEZONE=GMT+7
+USAGE_DASHBOARD_CODE=kode_dashboard_rahasia</pre>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
