@@ -1,5 +1,5 @@
 window.RB_CONFIG = Object.freeze({
-  API_URL: 'https://script.google.com/macros/s/AKfycbxlOv3bqiIlMrwGRZ3YfZihcDsST0Sa3hjzhBgB5klGIsHIErZRKuDlI75AzFMA-vyG/exec',
+  API_URL: 'https://script.google.com/macros/s/AKfycbyKls8FDHvwvi7j9-fQRQr3G7Cd40V3OYqlWM3TEoutryNFQ2CWqlNLuyppCgRq1Rjc/exec',
   DEFAULT_FINDING_PHOTO_ROWS: 1,
   DEFAULT_CORRECTIVE_PHOTO_ROWS: 1,
   PHOTO_CELLS_PER_ROW: 4,
