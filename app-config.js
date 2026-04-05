@@ -1,0 +1,18 @@
+window.RB_CONFIG = Object.freeze({
+  API_URL: 'https://script.google.com/macros/s/AKfycbxlOv3bqiIlMrwGRZ3YfZihcDsST0Sa3hjzhBgB5klGIsHIErZRKuDlI75AzFMA-vyG/exec',
+  DEFAULT_FINDING_PHOTO_ROWS: 1,
+  DEFAULT_CORRECTIVE_PHOTO_ROWS: 1,
+  PHOTO_CELLS_PER_ROW: 4,
+  MAX_TABLE_ROWS: 50,
+  MAX_CREW: 10,
+  DB_NAME: 'regional_bestie_visit_report_db',
+  DB_VERSION: 3,
+  DB_STORE: 'kv',
+  DB_CORE_KEY: 'report-state-core',
+  DB_MEDIA_KEY: 'report-state-media',
+  BULLET_PREFIX: '• ',
+  AUTOSAVE_DEBOUNCE_MS: 450,
+  MEDIA_SAVE_DEBOUNCE_MS: 800,
+  HEARTBEAT_MS: 25000,
+  ACTIVE_WINDOW_MS: 120000
+});

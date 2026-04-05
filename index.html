@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regional Bestie Visit Report</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+
+    <!-- =========================================================
+         [RB-TAG-INDEX]
+         Cari cepat: RB-SECTION-REPORT-FORM, RB-SECTION-SECRET-PANEL,
+         RB-JS-INIT, RB-JS-PDF, RB-JS-AUTOSAVE, RB-JS-SECRET-PANEL, RB-JS-REALTIME-USAGE
+         ========================================================= -->
+
+    <style>
+    /* =========================================================
+       [RB-CSS-STACKED-OBSERVATION]
+       Cari cepat: RB-CSS-STACKED-OBSERVATION
+       ========================================================= */
+    .stacked-observation .table-toolbar {
+        margin-bottom: 14px;
+    }
+    .stacked-observation .table-toolbar-right {
+        display: none;
+    }
+    .stacked-observation .table-toolbar-note {
+        font-size: 12px;
+        color: #475569;
+    }
+    .stacked-observation .table-container {
+        overflow: visible;
+    }
+    .stacked-observation .dynamic-table,
+    .stacked-observation .dynamic-table tbody,
+    .stacked-observation .dynamic-table tr,
+    .stacked-observation .dynamic-table td {
+        display: block;
+        width: 100%;
+    }
+    .stacked-observation .dynamic-table thead {
+        display: none;
+    }
+    .stacked-observation .dynamic-table tr {
+        margin-bottom: 16px;
+        padding: 16px;
+        border: 1.5px solid #d6e0ea;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+    }
+    .stacked-observation .dynamic-table td {
+        border: none;
+        padding: 0 0 12px;
+        background: transparent !important;
+    }
+    .stacked-observation .dynamic-table td:last-child {
+        padding-bottom: 0;
+    }
+    .stacked-observation .dynamic-table td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #27415e;
+        margin-bottom: 6px;
+    }
+    .stacked-observation .dynamic-table td[data-label="Aksi"]::before {
+        display: none;
+    }
+    .stacked-observation .dynamic-table td input[type="date"],
+    .stacked-observation .dynamic-table td textarea {
+        width: 100%;
+    }
+    .textarea-bullet-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .btn-inline-bullet {
+        align-self: flex-start;
+        padding: 7px 12px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #0f766e;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .btn-inline-bullet:hover {
+        background: #f8fafc;
+    }
+    .table-footer-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 14px;
+    }
+    .table-footer-actions .btn {
+        min-width: 150px;
+    }
+    @media (max-width: 768px) {
+        .stacked-observation .dynamic-table tr {
+            padding: 12px;
+        }
+        .table-footer-actions {
+            justify-content: stretch;
+        }
+        .table-footer-actions .btn {
+            width: 100%;
+        }
+    }
+    </style>
+
+    <style>
+    /* =========================================================
+       [RB-CSS-SECRET-PANEL]
+       Cari cepat:
+       - RB-CSS-SECRET-BUTTON
+       - RB-CSS-SECRET-AUTH
+       - RB-CSS-SECRET-DRAWER
+       ========================================================= */
+    :root {
+        --rb-secret-safe-top: max(14px, env(safe-area-inset-top));
+        --rb-secret-safe-right: max(14px, env(safe-area-inset-right));
+        --rb-secret-safe-bottom: max(14px, env(safe-area-inset-bottom));
+        --rb-secret-safe-left: max(14px, env(safe-area-inset-left));
+    }
+    body.secret-panel-open {
+        overflow: hidden;
+    }
+
+    /* === [RB-CSS-SECRET-BUTTON] === */
+    .secret-access-btn {
+        position: fixed;
+        right: var(--rb-secret-safe-right);
+        bottom: var(--rb-secret-safe-bottom);
+        width: 54px;
+        height: 54px;
+        min-width: 54px;
+        min-height: 54px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: linear-gradient(135deg, rgba(16, 42, 67, 0.92), rgba(15, 118, 110, 0.92));
+        box-shadow: 0 16px 34px rgba(15, 23, 42, 0.24);
+        color: #ffffff;
+        opacity: 0.72;
+        z-index: 70;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .secret-access-btn::before {
+        content: '•••';
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: 0.16em;
+        transform: translateX(1px);
+    }
+    .secret-access-btn:hover,
+    .secret-access-btn:focus-visible {
+        opacity: 1;
+        transform: translateY(-1px) scale(1.04);
+        box-shadow: 0 20px 42px rgba(15, 23, 42, 0.28);
+        outline: none;
+    }
+    .secret-access-btn:focus-visible {
+        box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.22), 0 20px 42px rgba(15, 23, 42, 0.28);
+    }
+
+    /* === [RB-CSS-SECRET-AUTH] === */
+    .secret-auth-modal,
+    .secret-activity-drawer {
+        position: fixed;
+        z-index: 80;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+    .secret-auth-modal.active,
+    .secret-activity-drawer.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .secret-auth-modal {
+        inset: 0;
+        background: rgba(15, 23, 42, 0.52);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: calc(var(--rb-secret-safe-top) + 8px) max(18px, env(safe-area-inset-right)) calc(var(--rb-secret-safe-bottom) + 8px) max(18px, env(safe-area-inset-left));
+        backdrop-filter: blur(6px);
+    }
+    .secret-auth-card {
+        width: min(420px, 100%);
+        max-height: calc(100dvh - 36px);
+        overflow-y: auto;
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+        transform: translateY(10px);
+    }
+    .secret-auth-modal.active .secret-auth-card { transform: translateY(0); }
+    .secret-auth-card h3 {
+        margin: 0 0 8px;
+        font-size: 22px;
+        color: #102a43;
+    }
+    .secret-auth-card p {
+        margin: 0 0 16px;
+        color: #52606d;
+        line-height: 1.5;
+    }
+    .secret-auth-card input {
+        width: 100%;
+        padding: 13px 15px;
+        border-radius: 14px;
+        border: 1px solid #cbd5e1;
+        font-size: 16px;
+        letter-spacing: 0.16em;
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    .secret-auth-error {
+        min-height: 20px;
+        color: #c62828;
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+    .secret-auth-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+    .secret-auth-actions .btn {
+        min-width: 120px;
+    }
+
+    /* === [RB-CSS-SECRET-DRAWER] === */
+    .secret-activity-drawer {
+        top: 0;
+        right: 0;
+        height: 100dvh;
+        width: min(460px, calc(100vw - 18px));
+        max-width: 100vw;
+        background: #f8fafc;
+        box-shadow: -18px 0 40px rgba(15, 23, 42, 0.22);
+        transform: translateX(110%);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-top-left-radius: 24px;
+        border-bottom-left-radius: 24px;
+    }
+    .secret-activity-drawer.active { transform: translateX(0); }
+    .secret-drawer-header {
+        padding: calc(var(--rb-secret-safe-top) + 6px) 20px 14px;
+        background: linear-gradient(135deg, #102a43, #0f766e);
+        color: #fff;
+        flex-shrink: 0;
+    }
+    .secret-drawer-header h3 {
+        margin: 0;
+        font-size: 20px;
+    }
+    .secret-drawer-header p {
+        margin: 6px 0 0;
+        opacity: 0.9;
+        font-size: 13px;
+        line-height: 1.45;
+    }
+    .secret-drawer-content {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    }
+    .secret-drawer-toolbar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #fff;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        flex-wrap: wrap;
+    }
+    .secret-drawer-toolbar .table-toolbar-right {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+    .secret-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        padding: 16px 18px 4px;
+    }
+    .secret-summary-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 12px 14px;
+        box-shadow: 0 8px 16px rgba(15, 23, 42, 0.04);
+    }
+    .secret-summary-card span {
+        display: block;
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+    .secret-summary-card strong {
+        font-size: 22px;
+        color: #102a43;
+    }
+    .secret-drawer-content .card-heading {
+        margin-left: 18px !important;
+        margin-right: 18px !important;
+    }
+    .secret-log-list {
+        padding: 14px 18px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .secret-log-item {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 12px 14px;
+        box-shadow: 0 8px 16px rgba(15, 23, 42, 0.04);
+    }
+    .secret-log-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 6px;
+        font-size: 12px;
+        color: #64748b;
+        flex-wrap: wrap;
+    }
+    .secret-log-item strong {
+        display: block;
+        color: #102a43;
+        margin-bottom: 4px;
+        font-size: 14px;
+    }
+    .secret-log-item p {
+        margin: 0;
+        color: #334155;
+        font-size: 13px;
+        line-height: 1.45;
+    }
+    .secret-empty {
+        margin: 0 18px 18px;
+        padding: 26px 20px;
+        text-align: center;
+        border: 1px dashed #cbd5e1;
+        border-radius: 18px;
+        color: #64748b;
+        background: #fff;
+    }
+    @media (max-width: 768px) {
+        .secret-access-btn {
+            width: 50px;
+            height: 50px;
+        }
+        .secret-auth-card {
+            border-radius: 18px;
+            padding: 20px;
+        }
+        .secret-activity-drawer {
+            width: 100vw;
+            border-radius: 0;
+        }
+        .secret-summary-grid {
+            grid-template-columns: 1fr;
+        }
+        .secret-drawer-toolbar .table-toolbar-right,
+        .secret-auth-actions {
+            width: 100%;
+        }
+        .secret-drawer-toolbar .btn,
+        .secret-auth-actions .btn {
+            flex: 1 1 140px;
+            justify-content: center;
+        }
+    }
+    @media (max-width: 480px) {
+        .secret-access-btn {
+            right: 12px;
+            bottom: 12px;
+        }
+        .secret-drawer-header {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        .secret-drawer-toolbar {
+            padding: 12px 16px;
+        }
+        .secret-summary-grid,
+        .secret-log-list {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        .secret-drawer-content .card-heading {
+            margin-left: 16px !important;
+            margin-right: 16px !important;
+        }
+    }
+    </style>
+
+</head>
+<body>
+    <!-- =========================================================
+         [RB-HTML-INDEX]
+         Cari cepat: RB-SECTION-REPORT-FORM, RB-SECTION-LOADING, RB-SECTION-SECRET-PANEL
+         ========================================================= -->
+    <div class="container app-shell">
+        <header class="header">
+            <div class="header-content">
+                <span class="eyebrow">Audit Report Builder</span>
+                <h1>Regional Bestie Visit Report</h1>
+                <p>Form audit ini sudah terintegrasi dengan Google Drive dan Spreadsheet secara otomatis.</p>
+                <div class="meta-chips">
+                    <span class="chip">🧾 PDF landscape yang lebih mudah dibaca</span>
+                    <span class="chip">💾 Autosave lokal aktif</span>
+                    <span class="chip">📊 Spreadsheet sync</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- === [RB-SECTION-REPORT-FORM] === -->
+        <div class="form-container">
+            <nav class="page-switcher" aria-label="Navigasi halaman">
+                <button type="button" class="page-btn active">REPORT</button>
+                <a href="analytics.html" class="page-btn">REAL ANALYTICS</a>
+            </nav>
+
+            <div class="system-status-bar" id="systemStatusBar">
+                <span class="system-status-dot pending" id="apiStatusDot"></span>
+                <div class="system-status-copy">
+                    <strong>Status Integrasi</strong>
+                    <span id="apiStatusText">Memeriksa koneksi Google Apps Script...</span>
+                </div>
+            </div>
+
+            <form id="reportForm" novalidate>
+                <section class="section">
+                    <div class="section-header">
+                        <div class="icon">1</div>
+                        <div class="section-title-wrap">
+                            <h2>Visit Report</h2>
+                            <p>Informasi dasar auditor dan store untuk identitas laporan.</p>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="namaDropdown">Nama Auditor *</label>
+                                <select id="namaDropdown" name="namaDropdown" required>
+                                    <option value="">-- Pilih Nama --</option>
+                                    <option value="Aan Bagus Permana">Aan Bagus Permana</option>
+                                    <option value="Anggi Novita">Anggi Novita</option>
+                                    <option value="Aulia Fauziah">Aulia Fauziah</option>
+                                    <option value="Aulia Puspita Dewi">Aulia Puspita Dewi</option>
+                                    <option value="Bagus Pradika">Bagus Pradika</option>
+                                    <option value="Cindy Silvia Sahyu">Cindy Silvia Sahyu</option>
+                                    <option value="Didin Sarudin">Didin Sarudin</option>
+                                    <option value="Edi Sukarno">Edi Sukarno</option>
+                                    <option value="Fadliani Rizky Fidiaz">Fadliani Rizky Fidiaz</option>
+                                    <option value="Fajar Saputra">Fajar Saputra</option>
+                                    <option value="Fendi Setiawan">Fendi Setiawan</option>
+                                    <option value="Fiqri Amatul Firdaus">Fiqri Amatul Firdaus</option>
+                                    <option value="Karlina Endah Puji Astuti">Karlina Endah Puji Astuti</option>
+                                    <option value="Malik Ibrahim">Malik Ibrahim</option>
+                                    <option value="Muhammad Fikri">Muhammad Fikri</option>
+                                    <option value="Novilya Dwi Rahman">Novilya Dwi Rahman</option>
+                                    <option value="Rani Ismawati">Rani Ismawati</option>
+                                    <option value="Rido Yuhanda">Rido Yuhanda</option>
+                                    <option value="Riki Prasetyawan">Riki Prasetyawan</option>
+                                    <option value="Rully Alfandi">Rully Alfandi</option>
+                                    <option value="Seftiana Putri Rahmawati">Seftiana Putri Rahmawati</option>
+                                    <option value="Tia Fitri">Tia Fitri</option>
+                                    <option value="Yuyun Yuliyanti">Yuyun Yuliyanti</option>
+                                    <option value="Andika Ryan Achmada">Andika Ryan Achmada</option>
+                                    <option value="Dhea Almahdiansyah">Dhea Almahdiansyah</option>
+                                    <option value="Ilyas Fajar Arisena">Ilyas Fajar Arisena</option>
+                                    <option value="Nia Tri Rahayu">Nia Tri Rahayu</option>
+                                    <option value="__MANUAL__">Lainnya...</option>
+                                </select>
+                                <input type="text" id="namaManual" placeholder="Ketik nama manual" style="display:none;">
+                            </div>
+                            <div class="form-group">
+                                <label for="store">Store *</label>
+                                <input type="text" id="store" name="store" placeholder="Masukkan nama store" required>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <div class="section-header">
+                        <div class="icon">2</div>
+                        <div class="section-title-wrap">
+                            <h2>Informasi Umum</h2>
+                            <p>Struktur PIC store dan crew yang bertugas pada saat kunjungan.</p>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tanggal">Hari, Tanggal *</label>
+                                <input type="date" id="tanggal" name="tanggal" required>
+                            </div>
+                        </div>
+
+                        <div class="crew-heading">
+                            <h3>Crew In Charge</h3>
+                            <span class="toolbar-badge">Maksimal 10 crew</span>
+                        </div>
+
+                        <div class="crew-level-row">
+                            <div class="form-group">
+                                <label for="storeLeader">Store Leader</label>
+                                <input type="text" id="storeLeader" placeholder="Nama Store Leader">
+                            </div>
+                            <div class="form-group">
+                                <label for="storeLeaderLevel">Job Level</label>
+                                <select id="storeLeaderLevel">
+                                    <option value="">Pilih</option>
+                                    <option value="1A">1A</option>
+                                    <option value="NS3">NS3</option>
+                                    <option value="NS1">NS1</option>
+                                    <option value="MG3">MG3</option>
+                                    <option value="MG1">MG1</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="crew-level-row">
+                            <div class="form-group">
+                                <label for="shiftLeader">Shift Leader</label>
+                                <input type="text" id="shiftLeader" placeholder="Nama Shift Leader">
+                            </div>
+                            <div class="form-group">
+                                <label for="shiftLeaderLevel">Job Level</label>
+                                <select id="shiftLeaderLevel">
+                                    <option value="">Pilih</option>
+                                    <option value="1A">1A</option>
+                                    <option value="NS3">NS3</option>
+                                    <option value="NS1">NS1</option>
+                                    <option value="MG3">MG3</option>
+                                    <option value="MG1">MG1</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Crew Store</label>
+                            <div class="dynamic-list">
+                                <div class="list-header">
+                                    <span>No</span>
+                                    <span>Nama Crew</span>
+                                    <span>Job Level</span>
+                                    <span>Aksi</span>
+                                </div>
+                                <div id="crewItems"></div>
+                            </div>
+                            <button type="button" class="btn btn-add" id="addCrewBtn">+ Add Crew Member</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <div class="section-header">
+                        <div class="icon">3</div>
+                        <div class="section-title-wrap">
+                            <h2>QSC / FAMITRACK Result</h2>
+                            <p>Unggah foto hasil QSC/Famitrack yang tajam dan mudah dibaca.</p>
+                        </div>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="toggleQSCResult">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="section-content" id="qscResultSection">
+                        <p class="helper-text">Gunakan foto yang tajam dan dapat dibaca.</p>
+                        <div class="qsc-photo-table">
+                            <div class="qsc-photo-cell">
+                                <div class="photo-upload-box" data-trigger-file="qscResultPhoto">
+                                    <input type="file" id="qscResultPhoto" accept="image/*" hidden>
+                                    <div id="qscResultPreview" class="photo-preview">
+                                        <span class="upload-icon">📷</span>
+                                        <span class="upload-text">Klik untuk upload foto QSC / Famitrack</span>
+                                    </div>
+                                </div>
+                                <textarea id="qscResultDesc" class="qsc-description auto-grow" rows="2" placeholder="Masukkan deskripsi foto..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section stacked-observation">
+                    <div class="section-header">
+                        <div class="icon">4</div>
+                        <div class="section-title-wrap">
+                            <h2>OPI PROJECT OBSERVATION - Findings &amp; Root Cause Analysis</h2>
+                            <p>Tabel observasi OPI diisi berdasarkan project dari OPI.</p>
+                        </div>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="toggleOPITable">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="section-content" id="opiTableSection">
+                        <div class="table-toolbar">
+                            <div class="table-toolbar-left">
+                                <span class="toolbar-badge">Bullet point tersedia di bawah setiap field</span>
+                            </div>
+                            <div class="table-toolbar-note">Tekan Enter setelah bullet untuk membuat bullet berikutnya.</div>
+                        </div>
+                        <div class="table-container">
+                            <table class="dynamic-table" id="opiTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width:16%">Temuan</th>
+                                        <th style="width:16%">Dampak</th>
+                                        <th style="width:16%">Penyebab</th>
+                                        <th style="width:20%">Tindakan Perbaikan</th>
+                                        <th style="width:14%">Tanggal Perbaikan / Deadline</th>
+                                        <th style="width:12%">Hasil</th>
+                                        <th style="width:6%">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="opiTableBody"></tbody>
+                            </table>
+                        </div>
+                        <p class="table-note">Isi berdasarkan checklist OPI.</p>
+                        <p class="field-note">Link referensi: <a href="https://tinyurl.com/opi-report" target="_blank" rel="noopener noreferrer">Klik untuk buka form report OPI</a></p>
+                        <div class="table-footer-actions">
+                            <button type="button" class="btn btn-add" data-add-row="opiTableBody">+ Add Row</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section stacked-observation">
+                    <div class="section-header">
+                        <div class="icon">5</div>
+                        <div class="section-title-wrap">
+                            <h2>QSC OBSERVATION - Findings &amp; Root Cause Analysis</h2>
+                        
+                        </div>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="toggleQSCTable">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="section-content" id="qscTableSection">
+                        <div class="table-toolbar">
+                            <div class="table-toolbar-left">
+                                <span class="toolbar-badge">Bullet point tersedia di bawah setiap field</span>
+                            </div>
+                            <div class="table-toolbar-note">Tekan Enter setelah bullet untuk membuat bullet berikutnya.</div>
+                        </div>
+                        <div class="table-container">
+                            <table class="dynamic-table" id="qscTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width:16%">Temuan</th>
+                                        <th style="width:16%">Dampak</th>
+                                        <th style="width:16%">Penyebab</th>
+                                        <th style="width:20%">Tindakan Perbaikan</th>
+                                        <th style="width:14%">Tanggal Perbaikan / Deadline</th>
+                                        <th style="width:12%">Hasil</th>
+                                        <th style="width:6%">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="qscTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="table-footer-actions">
+                            <button type="button" class="btn btn-add" data-add-row="qscTableBody">+ Add Row</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <div class="section-header">
+                        <div class="icon">6</div>
+                        <div class="section-title-wrap">
+                            <h2>Bukti Temuan OPI &amp; QSC</h2>
+                           
+                        </div>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="toggleFindingEvidence">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="section-content" id="findingEvidenceSection">
+                        <div id="findingEvidenceGrid" class="photo-grid"></div>
+                        <button type="button" class="btn btn-add" data-add-photo-row="findingEvidenceGrid">+ Add Photo Row</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <div class="section-header">
+                        <div class="icon">7</div>
+                        <div class="section-title-wrap">
+                            <h2>Corrective Action Evidence &amp; Result by Regional Bestie</h2>
+                           
+                        </div>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="toggleCorrectiveAction">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="section-content" id="correctiveActionSection">
+                        <div id="correctiveActionGrid" class="photo-grid"></div>
+                        <button type="button" class="btn btn-add" data-add-photo-row="correctiveActionGrid">+ Add Photo Row</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <div class="section-header">
+                        <div class="icon">8</div>
+                        <div class="section-title-wrap">
+                            <h2>Store Assignment &amp; Corrective Action</h2>
+                            <p>Tautan penugasan dan reminder mekanisme pelaporan.</p>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label for="storeAssignmentLink">Assignment Link</label>
+                            <input type="url" id="storeAssignmentLink" value="https://tinyurl.com/store-caassignment" placeholder="https://example.com/assignment">
+                        </div>
+                        <div class="info-box">
+                            <h4>Mekanisme Pelaporan</h4>
+                            <ol>
+                                <li>Unduh file pada link di atas.</li>
+                                <li>Tim store mengisi form berdasarkan temuan pada laporan audit ini.</li>
+                                <li>Tindakan perbaikan wajib dilakukan sebelum deadline yang diberikan oleh Regional Bestie.</li>
+                                <li>Form tindakan perbaikan yang telah dibuat wajib dikirimkan kembali via email dengan terusan:
+                                    <ul style="list-style-type: lower-alpha; margin-top: 8px;">
+                                        <li>Regional Manager</li>
+                                        <li>Area Manager</li>
+                                        <li>Regional Bestie</li>
+                                        <li>FMCU (Bu Sari, Pak Ami, Pak Aufar)</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-primary" id="downloadPdfBtn">⬇️ Download PDF</button>
+                    <button type="button" class="btn btn-secondary" id="tutorialBtn">📊 Download PPT</button>
+                    <button type="button" class="btn btn-danger" id="clearDataBtn">🗑️ Clear Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- === [RB-SECTION-LOADING] === -->
+    <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
+        <div class="loading-card">
+            <div class="loading-spinner"></div>
+            <h3 class="loading-title" id="loadingTitle">Menyiapkan PDF</h3>
+            <p class="loading-text" id="loadingText">Mohon tunggu, laporan sedang diproses.</p>
+            <div class="loading-progress">
+                <div class="loading-progress-bar" id="loadingProgressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- === [RB-SECTION-SECRET-PANEL] === -->
+    <button type="button" class="secret-access-btn" id="secretAccessBtn" aria-label="Buka panel aktivitas" aria-haspopup="dialog" aria-controls="secretAuthModal secretActivityDrawer" aria-expanded="false"></button>
+
+    <div class="secret-auth-modal" id="secretAuthModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="secretAuthTitle" aria-describedby="secretAuthDesc">
+        <div class="secret-auth-card" tabindex="-1">
+            <h3 id="secretAuthTitle">Panel Aktivitas</h3>
+            <p id="secretAuthDesc">Masukkan kode akses untuk melihat aktivitas penggunaan web ini.</p>
+            <input type="password" id="secretAuthInput" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="••••••">
+            <div class="secret-auth-error" id="secretAuthError"></div>
+            <div class="secret-auth-actions">
+                <button type="button" class="btn btn-ghost" id="secretAuthCancelBtn">Tutup</button>
+                <button type="button" class="btn btn-primary" id="secretAuthSubmitBtn">Buka Panel</button>
+            </div>
+        </div>
+    </div>
+
+    <aside class="secret-activity-drawer" id="secretActivityDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="secretDrawerTitle">
+        <div class="secret-drawer-header">
+            <h3 id="secretDrawerTitle">Aktivitas Penggunaan</h3>
+            <p>Panel ini menampilkan aktivitas semua user yang mengakses web berdasarkan nama secara real time.</p>
+        </div>
+        <div class="secret-drawer-content">
+        <div class="secret-drawer-toolbar">
+            <span class="toolbar-badge" id="remoteUsageBadge">Kode akses aktif</span>
+            <div class="table-toolbar-right">
+                <button type="button" class="btn btn-ghost" id="refreshActivityLogBtn">Refresh</button>
+                <button type="button" class="btn btn-primary" id="closeSecretDrawerBtn">Tutup</button>
+            </div>
+        </div>
+        <div class="secret-summary-grid">
+            <div class="secret-summary-card"><span>Total event hari ini</span><strong id="activityTotalCount">0</strong></div>
+            <div class="secret-summary-card"><span>User aktif sekarang</span><strong id="activityTodayCount">0</strong></div>
+            <div class="secret-summary-card"><span>User unik hari ini</span><strong id="activityDownloadCount">0</strong></div>
+            <div class="secret-summary-card"><span>Download PDF hari ini</span><strong id="activityErrorCount">0</strong></div>
+        </div>
+        <div class="card-heading" style="margin:18px 0 10px;">
+            <div>
+                <h3>User Aktif Sekarang</h3>
+                <p id="activeUsersMeta">Menunggu data real time...</p>
+            </div>
+        </div>
+        <div class="secret-log-list" id="activeUsersList"></div>
+        <div class="card-heading" style="margin:18px 0 10px;">
+            <div>
+                <h3>Riwayat Aktivitas Terbaru</h3>
+                <p id="recentEventsMeta">Aktivitas terbaru seluruh user.</p>
+            </div>
+        </div>
+        <div class="secret-log-list" id="secretLogList"></div>
+        </div>
+    </aside>
+
+
+    <!-- === [RB-JS-INDEX] === -->
+    <script src="app-config.js"></script>
+    <script src="report-app.js"></script>
+</body>
+</html>
